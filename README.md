@@ -1,21 +1,9 @@
-# GOV Voice Teleprompter v2
+# GOV Voice Teleprompter v3
+Browser teleprompter with word-level voice tracking.
 
-Static/PWA voice-following teleprompter for GOV News.
+Important: Voice tracking uses the browser Web Speech API. Chrome/Edge/Safari support varies by device and language. The matching engine is client-side and searches a rolling speech window against the script, with whole-script recovery and mismatch hysteresis.
 
-Features:
-- Whole-script fuzzy voice tracking
-- Handles pauses, small wording differences and skipped sections
-- Can re-sync forward or backward
-- Stops after repeated clear mismatch
-- Hindi + Indian English recognition
-- Mirror mode
-- Presentation mode
-- Manual word/segment click-to-sync
-- Script history in browser
-- Offline PWA shell
-- No server or API key required
-
-Best browser: current Chrome/Edge/Safari. Speech recognition availability depends on browser/device.
-
-Deploy:
-Upload index.html, manifest.webmanifest and sw.js to a GitHub Pages repository root, then enable Pages.
+Deploy the three files to the repository root:
+- index.html
+- manifest.webmanifest
+- sw.js

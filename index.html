@@ -3,42 +3,57 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08090b">
-<title>GOV Voice Teleprompter v3</title>
+<meta name="theme-color" content="#070809">
+<title>GOV Voice Teleprompter v4</title>
 <style>
-:root{--bg:#070809;--panel:#111318;--line:#292d36;--text:#f5f5f5;--muted:#969daa;--yellow:#ffd21c;--green:#42d47b;--red:#ff6565}
+:root{--bg:#070809;--panel:#111318;--line:#292d36;--text:#f5f5f5;--muted:#969daa;--yellow:#ffd21c;--green:#42d47b;--red:#ff6565;--blue:#56a8ff}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Devanagari","Noto Sans",sans-serif}
 body{overflow:hidden}.app{height:100%;display:flex;flex-direction:column}
-header{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#111318;border-bottom:1px solid var(--line);z-index:20;flex-wrap:wrap}.brand{font-weight:850;font-size:18px;margin-right:auto}.brand b{color:var(--yellow)}
-button,select,input,textarea{font:inherit}button{border:0;border-radius:9px;background:#272b33;color:#fff;padding:9px 12px}button.primary{background:var(--yellow);color:#111;font-weight:800}button.active{outline:2px solid var(--yellow)}
-.status{padding:6px 9px;border-radius:20px;background:#282c34;font-size:12px;color:#d3d6dc}.live{background:#103822;color:#8ff1b1}.warn{background:#46300e;color:#ffd98e}.bad{background:#481d22;color:#ffaaaa}
-.controls{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#17191e;border-bottom:1px solid var(--line);flex-wrap:wrap;font-size:12px}.controls label{display:flex;align-items:center;gap:5px;color:#adb2bb}.controls input[type=range]{width:95px}.controls select{background:#272b33;color:#fff;border:1px solid #373b44;border-radius:7px;padding:6px}
-.meter{height:4px;background:#242831}.meter i{display:block;height:100%;width:0;background:var(--yellow);transition:width .2s}
-.layout{flex:1;min-height:0;display:grid;grid-template-columns:330px 1fr}.editor{background:#101216;border-right:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0}.editor textarea{flex:1;min-height:220px;resize:none;background:#07090b;border:1px solid #30343d;border-radius:10px;color:#eee;padding:12px;line-height:1.6;font-size:16px}.row{display:flex;gap:6px}.row>*{flex:1}.hint{font-size:11px;color:#9097a2;line-height:1.45}
-.reader{position:relative;overflow:auto;background:#050608;padding:44vh 7vw 55vh;scroll-behavior:smooth}.text{max-width:1100px;margin:auto;font-size:44px;line-height:1.55;text-align:center}.word{display:inline;border-radius:4px;padding:1px 1px;color:#d9dce2;transition:color .12s,background .12s}.word.done{color:#515761}.word.active{color:#fff;background:rgba(255,210,28,.13);box-shadow:0 0 0 1px rgba(255,210,28,.16)}.word:hover{background:#22262d;cursor:pointer}.space{white-space:pre}.para{display:block;height:.45em}
-.eyeline{position:fixed;left:0;right:0;top:50%;border-top:1px solid rgba(255,210,28,.15);pointer-events:none}.diag{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);background:#171a20e8;border:1px solid #363a43;border-radius:11px;padding:7px 10px;font-size:11px;color:#aeb4be;max-width:92vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:30}.panel{position:fixed;right:12px;bottom:12px;background:#171a20e8;border:1px solid #363a43;border-radius:11px;padding:8px 10px;font-size:11px;color:#aeb4be;z-index:30}.panel b{color:#fff}.hidden{display:none}
+header{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#111318;border-bottom:1px solid var(--line);z-index:20;flex-wrap:wrap}
+.brand{font-weight:850;font-size:18px;margin-right:auto}.brand b{color:var(--yellow)}
+button,select,input,textarea{font:inherit}button{border:0;border-radius:9px;background:#272b33;color:#fff;padding:9px 12px;cursor:pointer}button.primary{background:var(--yellow);color:#111;font-weight:800}button.active{outline:2px solid var(--yellow)}
+button:disabled{opacity:.5;cursor:not-allowed}.status{padding:6px 9px;border-radius:20px;background:#282c34;font-size:12px;color:#d3d6dc}.live{background:#103822;color:#8ff1b1}.warn{background:#46300e;color:#ffd98e}.bad{background:#481d22;color:#ffaaaa}.blue{background:#12304f;color:#9dceff}
+.controls{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#17191e;border-bottom:1px solid var(--line);flex-wrap:wrap;font-size:12px}
+.controls label{display:flex;align-items:center;gap:5px;color:#adb2bb}.controls input[type=range]{width:95px}.controls select{background:#272b33;color:#fff;border:1px solid #373b44;border-radius:7px;padding:6px}
+.meter{height:4px;background:#242831}.meter i{display:block;height:100%;width:0;background:var(--yellow);transition:width .15s}
+.layout{flex:1;min-height:0;display:grid;grid-template-columns:330px 1fr}.editor{background:#101216;border-right:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0}
+.editor textarea{flex:1;min-height:220px;resize:none;background:#07090b;border:1px solid #30343d;border-radius:10px;color:#eee;padding:12px;line-height:1.6;font-size:16px}
+.row{display:flex;gap:6px}.row>*{flex:1}.hint{font-size:11px;color:#9097a2;line-height:1.45}
+.reader{position:relative;overflow:auto;background:#050608;padding:44vh 7vw 55vh;scroll-behavior:smooth}
+.text{max-width:1100px;margin:auto;font-size:44px;line-height:1.55;text-align:center}
+.word{display:inline;border-radius:4px;padding:1px 1px;color:#d9dce2;transition:color .12s,background .12s}.word.done{color:#515761}
+.word.active{color:#fff;background:rgba(255,210,28,.14);box-shadow:0 0 0 1px rgba(255,210,28,.16)}
+.word:hover{background:#22262d;cursor:pointer}.para{display:block;height:.45em}
+.eyeline{position:fixed;left:0;right:0;top:50%;border-top:1px solid rgba(255,210,28,.15);pointer-events:none}
+.diag{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);background:#171a20ee;border:1px solid #363a43;border-radius:11px;padding:7px 10px;font-size:11px;color:#aeb4be;max-width:92vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:30}
+.panel{position:fixed;right:12px;bottom:12px;background:#171a20e8;border:1px solid #363a43;border-radius:11px;padding:8px 10px;font-size:11px;color:#aeb4be;z-index:30}.panel b{color:#fff}
+.debug{position:fixed;right:12px;top:105px;width:min(420px,92vw);max-height:40vh;overflow:auto;background:#11151ceF;border:1px solid #333944;border-radius:12px;padding:10px;z-index:50;box-shadow:0 15px 50px #000}
+.debug pre{white-space:pre-wrap;word-break:break-word;margin:0;font:12px/1.5 ui-monospace,monospace;color:#d8dde6}.hidden{display:none}
+.whisperBox{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.whisperBox small{color:#8e96a4}
 @media(max-width:850px){.layout{display:block}.editor{display:none;position:absolute;z-index:40;left:7px;right:7px;top:105px;bottom:7px;border:1px solid var(--line);border-radius:12px;box-shadow:0 15px 50px #000}.editor.open{display:flex}.mobile{display:inline-block!important}.text{font-size:32px}.reader{padding-left:5vw;padding-right:5vw}}
 .mobile{display:none}
 body.presentation header,body.presentation .controls,body.presentation .editor{display:none!important}body.presentation .layout{display:block}body.presentation .reader{height:100%}
-.mirror .text{transform:scaleX(-1) rotate(180deg)}.rotated{transform:rotate(90deg);transform-origin:center center}
+.mirror .text{transform:scaleX(-1)}.rotated .reader{transform:rotate(90deg);transform-origin:center center}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-  <div class="brand"><b>GOV</b> Voice Teleprompter</div>
+  <div class="brand"><b>GOV</b> Voice Teleprompter <span style="font-size:11px;color:#777">v4</span></div>
   <span id="status" class="status">तैयार</span>
   <button id="editBtn" class="mobile">☰ Script</button>
   <button id="mic" class="primary">🎙️ Voice Start</button>
-  <button id="pause">⏸ Pause</button>
+  <button id="stop">■ Stop</button>
   <button id="present">▶ Presentation</button>
+  <button id="debugBtn">⚙ Debug</button>
   <button id="full">⛶</button>
 </header>
 <div class="controls">
   <label>Font <input id="font" type="range" min="22" max="85" value="44"></label>
   <label>Line <input id="line" type="range" min="115" max="190" value="155"></label>
   <label>Active line <input id="active" type="range" min="30" max="70" value="50"></label>
-  <label>Language <select id="lang"><option value="hi-IN">Hindi</option><option value="en-IN">English India</option><option value="en-US">English US</option></select></label>
+  <label>ASR <select id="engine"><option value="whisper">Whisper Local</option><option value="web">Browser Speech</option></select></label>
+  <label>Language <select id="lang"><option value="auto">Auto / Mixed</option><option value="hi">Hindi</option><option value="en">English</option></select></label>
   <label>Tracking <select id="sensitivity"><option value="easy">Flexible</option><option value="normal" selected>Normal</option><option value="strict">Strict</option></select></label>
   <button id="mirror">🪞 Mirror</button><button id="rotate">↻ Rotate</button>
   <button id="back">← Back</button><button id="next">Next →</button><button id="restart">↺ Start</button>
@@ -48,185 +63,344 @@ body.presentation header,body.presentation .controls,body.presentation .editor{d
 <aside id="editor" class="editor">
   <textarea id="scriptInput" placeholder="Hindi / Hinglish script यहाँ paste करें..."></textarea>
   <div class="row"><button id="load" class="primary">Load Script</button><button id="save">Save</button><button id="clear">Clear</button></div>
-  <div class="hint">Voice Track पहले बोले हुए शब्दों का rolling buffer बनाता है, फिर script में matching word-window खोजता है। साफ mismatch पर थोड़ी देर बाद रुकता है और वापस script मिलने पर आगे/पीछे re-sync करता है।</div>
-  <div class="hint">पहली बार microphone permission Allow करें। Android पर Chrome में test करना बेहतर है।</div>
+  <div class="whisperBox"><button id="loadWhisper">⚡ Load Whisper</button><small id="modelState">पहली बार model download होगा</small></div>
+  <div class="hint">Whisper Local mode में speech recognition browser के SpeechRecognition पर निर्भर नहीं है। पहली बार छोटा Whisper model डाउनलोड होगा; उसके बाद browser cache से चलता है। यह पूरा processing इसी browser में करता है।</div>
+  <div class="hint">Voice tracking पूरे script में match करता है: थोड़ा wording बदलना, कुछ शब्द छोड़ना, ad-lib करना या पीछे लौटकर दोबारा बोलना संभालने के लिए बनाया गया है। मजबूत match मिलने पर ही position बदलती है।</div>
+  <div class="hint">अगर Whisper फोन पर धीमा हो तो ASR → Browser Speech कर दें। Debug से transcript और match देख सकते हैं।</div>
 </aside>
 <main id="reader" class="reader"><div id="text" class="text"><div style="color:#666;padding-top:15vh">Script load करें।</div></div></main>
 </div>
 </div>
 <div class="eyeline"></div>
 <div id="diag" class="diag hidden"></div>
-<div class="panel">Match <b id="score">—</b> · <b id="position">0%</b> · Spoken <b id="spoken">0</b></div>
+<div id="debug" class="debug hidden"><pre id="debugText"></pre></div>
+<div class="panel">Match <b id="score">—</b> · <b id="position">0%</b> · Spoken <b id="spoken">0</b> · <b id="engineState">Whisper</b></div>
 
-<script>
-(()=> {
+<script type="module">
+import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0";
+env.allowLocalModels = false;
+env.useBrowserCache = true;
+
 const $=id=>document.getElementById(id);
-const S={tokens:[],pos:0,recognition:null,listening:false,paused:false,finalText:"",lastResult:"",bad:0,good:0,mirror:false,rotate:false,script:""};
-const fillers=new Set(("a an the and or to of in on for with from is are was were be been this that it you your we they he she i me my our their am do does did have has had will would can could should as at by about into over after before if then than so very just now not no yes hai hain ho hua hui hue tha thi the mein me mujhe mera meri mere ko ke ka ki kaafi ek aur ya ye yeh woh wo ab to phir bas bhi hi na nahi ki kya kaise kyun kyunki agar lekin jab jaisa jaise tak par se ne par main matlab yani dekhiye dekho dosto").split(" "));
-function norm(s){return String(s||"").toLowerCase().normalize("NFC").replace(/[क़]/g,"क").replace(/[ख़]/g,"ख").replace(/[ग़]/g,"ग").replace(/[ज़]/g,"ज").replace(/[ड़]/g,"ड").replace(/[ढ़]/g,"ढ").replace(/[फ़]/g,"फ").replace(/[ऱ]/g,"र").replace(/[।॥!?;:,."“”‘’'()[\]{}<>]/g," ").replace(/[-–—_/|]/g," ").replace(/\s+/g," ").trim()}
-function words(s){return norm(s).split(" ").filter(Boolean)}
-function content(s){return words(s).filter(w=>w.length>1&&!fillers.has(w))}
-function edit(a,b){let m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array(n+1).fill(0).map((_,i)=>i);for(let i=1;i<=m;i++){let q=[i];for(let j=1;j<=n;j++)q[j]=Math.min(q[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=q}return p[n]}
-function lcs(a,b){let p=Array(b.length+1).fill(0);for(let i=1;i<=a.length;i++){let q=[0];for(let j=1;j<=b.length;j++)q[j]=a[i-1]===b[j-1]?p[j-1]+1:Math.max(p[j],q[j-1]);p=q}return p[b.length]}
-function matchScore(a,b){
- const A=content(a),B=content(b);if(!A.length||!B.length)return 0;
- const ed=1-edit(A,B)/Math.max(A.length,B.length);
- const lc=lcs(A,B)/Math.max(1,Math.min(A.length,B.length));
- let anchor=0;
- for(let i=0;i<A.length;i++)for(let j=0;j<B.length;j++){let k=0;while(i+k<A.length&&j+k<B.length&&A[i+k]===B[j+k])k++;if(k>anchor)anchor=k}
- const an=Math.min(1,anchor/Math.min(4,Math.max(2,A.length)));
- return .45*ed+.35*lc+.20*an;
+const S={
+  tokens:[], pos:0, script:"", listening:false, paused:false, engine:"whisper",
+  whisper:null, stream:null, audio:null, source:null, processor:null, pcm:[],
+  sampleRate:48000, sample16:[], lastWhisperAt:0, whisperBusy:false, cycle:0,
+  speechRec:null, webText:"", lastTranscript:"", score:0, lastJump:0, badTokens:0,
+  debug:[], debugOpen:false, font:44, line:155, activeLine:50, sensitivity:"normal"
+};
+
+const fillers=new Set(("a an the and or to of in on for with from is are was were be been this that it you your we they he she i me my our their am do does did have has had will would can could should as at by about into over after before if then than so very just now not no yes hai hain ho hua hui hue tha thi the mein me mujhe mera meri mere ko ke ka ki kaafi ek aur ya ye yeh woh wo ab phir bas bhi hi na nahi ki kya kaise kyun kyunki agar lekin jab jaisa jaise tak par se ne main matlab yani dekhiye dekho dosto".split(" ")));
+
+function norm(s){
+  return String(s||"").toLowerCase().normalize("NFC")
+    .replace(/[क़]/g,"क").replace(/[ख़]/g,"ख").replace(/[ग़]/g,"ग").replace(/[ज़]/g,"ज")
+    .replace(/[ड़]/g,"ड").replace(/[ढ़]/g,"ढ").replace(/[फ़]/g,"फ").replace(/[ऱ]/g,"र")
+    .replace(/[।॥!?;:,."“”‘’'()[\]{}<>]/g," ").replace(/[-–—_/|]/g," ")
+    .replace(/\s+/g," ").trim();
 }
-function parse(text){
- const arr=[];
- const parts=text.split(/(\n\s*\n)/);
- for(const part of parts){
-   if(!part.trim()){arr.push({type:"gap"});continue}
-   const ws=part.trim().split(/\s+/);
-   for(const raw of ws){
-     const t=raw.replace(/^[“"‘'([{]+|[”"’')\]},.!?।॥:;]+$/g,"");
-     if(t)arr.push({type:"word",text:t,norm:norm(t)});
-   }
- }
- return arr;
+function toks(s){return norm(s).split(" ").filter(Boolean)}
+function isContent(w){return w && w.length>1 && !fillers.has(w)}
+function content(arr){return arr.filter(isContent)}
+function charSim(a,b){
+  if(a===b)return 1;
+  if(!a||!b)return 0;
+  const A=new Set(), B=new Set();
+  for(let i=0;i<a.length-1;i++)A.add(a.slice(i,i+2));
+  for(let i=0;i<b.length-1;i++)B.add(b.slice(i,i+2));
+  let inter=0; for(const x of A)if(B.has(x))inter++;
+  return (2*inter)/(Math.max(1,A.size+B.size));
 }
-function render(){
- const el=$("text");el.innerHTML="";
- S.tokens.forEach((t,i)=>{
-   if(t.type==="gap"){const p=document.createElement("span");p.className="para";el.appendChild(p);return}
-   const e=document.createElement("span");e.className="word";e.dataset.i=i;e.textContent=t.text+" ";e.onclick=()=>jump(i);el.appendChild(e);
- });
- paint();
+function tokenSim(a,b){
+  if(a===b)return 1;
+  if(a.length<3||b.length<3)return 0;
+  return charSim(a,b)>=.55?.7:0;
 }
-function paint(){
- const els=document.querySelectorAll(".word");
- els.forEach((e,i)=>{const n=+e.dataset.i;e.classList.toggle("done",n<S.pos);e.classList.toggle("active",n===S.pos)});
- const cur=document.querySelector('.word[data-i="'+S.pos+'"]');
- if(cur)cur.scrollIntoView({behavior:"smooth",block:"center"});
- const wordCount=S.tokens.filter(x=>x.type==="word").length;
- const done=S.tokens.slice(0,S.pos).filter(x=>x.type==="word").length;
- const pct=wordCount?Math.round(done/wordCount*100):0;
- $("meter").style.width=pct+"%";$("position").textContent=pct+"%";
+function align(query,start){
+  const q=query, W=14;
+  const b=S.tokens.slice(Math.max(0,start-2),Math.min(S.tokens.length,start+q.length+W));
+  if(!q.length||!b.length)return {score:0,end:start};
+  const gap=-0.65, match=2.0, mismatch=-1.05;
+  let prev=Array(b.length+1).fill(0), best={score:-1e9,end:start};
+  // local alignment with positive restart
+  for(let i=1;i<=q.length;i++){
+    const cur=Array(b.length+1).fill(0);
+    for(let j=1;j<=b.length;j++){
+      const s=tokenSim(q[i-1],b[j-1]);
+      cur[j]=Math.max(0,prev[j-1]+(s?match*s:mismatch),prev[j]+gap,cur[j-1]+gap);
+      if(cur[j]>best.score){
+        best.score=cur[j];
+        best.end=Math.max(start,start-2+j-1);
+      }
+    }
+    prev=cur;
+  }
+  const denom=Math.max(1,Math.min(q.length,Math.ceil(best.score/2)));
+  const normalized=Math.max(0,Math.min(1,best.score/(q.length*2)));
+  return {score:normalized,end:best.end};
 }
-function jump(i){let j=i;while(j<S.tokens.length&&S.tokens[j].type!=="word")j++;S.pos=Math.max(0,Math.min(S.tokens.length-1,j));S.bad=0;paint()}
-function setStatus(t,c=""){const e=$("status");e.textContent=t;e.className="status "+c}
-function diag(t){const e=$("diag");e.textContent=t;e.classList.remove("hidden");clearTimeout(diag.t);diag.t=setTimeout(()=>e.classList.add("hidden"),2500)}
-function scriptTextFromTokens(){return S.tokens.filter(x=>x.type==="word").map(x=>x.text).join(" ")}
-function build(){
- S.script=$("scriptInput").value.trim();S.tokens=parse(S.script);S.pos=0;S.finalText="";S.bad=0;S.good=0;render();localStorage.setItem("gov_v3_script",S.script);diag(S.tokens.filter(x=>x.type==="word").length+" words loaded")}
-function threshold(){return $("sensitivity").value==="easy"?.38:$("sensitivity").value==="strict"?.55:.46}
-function scriptWordArray(){return S.tokens.filter(x=>x.type==="word")}
-function candidatePositions(spokenWords){
- const arr=scriptWordArray(), N=arr.length, out=new Set();
- const curWordIndex=S.tokens.slice(0,S.pos+1).filter(x=>x.type==="word").length;
- const L=spokenWords.length;
- for(let d=-70;d<=140;d+=2){let p=curWordIndex+d;if(p>=0&&p<N)out.add(p)}
- // Whole-script recovery candidates: exact 3-gram anchors and broad sampling.
- const tail=spokenWords.slice(-8);
- const grams=[];
- for(let n=4;n>=3;n--){for(let i=0;i+n<=tail.length;i++)grams.push(tail.slice(i,i+n).join(" "));}
- const text=arr.map(x=>x.norm);
- for(const g of grams){
-   const gws=g.split(" ");
-   for(let i=0;i+gws.length<=N;i++){
-     let ok=true;for(let j=0;j<gws.length;j++){if(text[i+j]!==gws[j]){ok=false;break}}
-     if(ok)out.add(i);
-   }
-   if(out.size>180)break;
- }
- const step=Math.max(1,Math.floor(N/180));
- for(let i=0;i<N;i+=step)out.add(i);
- return [...out];
+
+function buildIndex(){
+  S.ng2=new Map(); S.ng3=new Map();
+  for(let i=0;i<S.tokens.length;i++){
+    if(isContent(S.tokens[i])&&isContent(S.tokens[i+1])){
+      const k=S.tokens[i]+" "+S.tokens[i+1];
+      if(!S.ng2.has(k))S.ng2.set(k,[]);
+      S.ng2.get(k).push(i);
+    }
+    if(isContent(S.tokens[i])&&isContent(S.tokens[i+1])&&isContent(S.tokens[i+2])){
+      const k=S.tokens[i]+" "+S.tokens[i+1]+" "+S.tokens[i+2];
+      if(!S.ng3.has(k))S.ng3.set(k,[]);
+      S.ng3.get(k).push(i);
+    }
+  }
 }
-function bestMatch(spoken){
- const sw=content(spoken);if(sw.length<2)return null;
- const arr=scriptWordArray(),N=arr.length,L=sw.length;
- let best={score:0,start:0,end:0};
- const candidates=candidatePositions(sw);
- for(const start of candidates){
-   const lengths=[Math.max(4,L-3),Math.max(5,L),Math.min(30,L+4),Math.min(36,L+8)];
-   for(const len of lengths){
-     if(start+len>N)continue;
-     const target=arr.slice(start,start+len).map(x=>x.text).join(" ");
-     const sc=matchScore(sw,target);
-     // Prefer matches near current, but a very strong global match wins.
-     const cur=S.tokens.slice(0,S.pos+1).filter(x=>x.type==="word").length;
-     const dist=Math.abs(start-cur);
-     const bias=dist<80?1:dist<250?.985:0.97;
-     const final=sc*bias;
-     if(final>best.score)best={score:final,start,end:start+len-1};
-   }
- }
- return best;
+
+function candidateStarts(query){
+  const set=new Set();
+  const localLo=Math.max(0,S.pos-35), localHi=Math.min(S.tokens.length-1,S.pos+110);
+  for(let i=localLo;i<=localHi;i++)set.add(i);
+  const cq=content(query);
+  const tails=[cq.slice(-3),cq.slice(-2),cq.slice(0,3),cq.slice(0,2)];
+  for(const t of tails){
+    if(t.length===3){
+      const k=t.join(" ");
+      for(const p of (S.ng3.get(k)||[]))set.add(p);
+    }else if(t.length===2){
+      const k=t.join(" ");
+      for(const p of (S.ng2.get(k)||[]))set.add(p);
+    }
+  }
+  // Exact content token anchors, limited to avoid huge candidate lists.
+  for(const w of cq.slice(-5)){
+    const arr=S.wordIndex?.get(w)||[];
+    const take=arr.length>80?arr.slice(0,80):arr;
+    for(const p of take)set.add(Math.max(0,p-2));
+  }
+  return [...set];
 }
-function applySpeech(transcript){
- const sw=content(transcript);$("spoken").textContent=sw.length;
- if(sw.length<2)return;
- const best=bestMatch(transcript);if(!best)return;
- $("score").textContent=Math.round(best.score*100)+"%";
- const arr=scriptWordArray();
- const currentWord=S.tokens.slice(0,S.pos+1).filter(x=>x.type==="word").length;
- const newWord=Math.min(arr.length-1,Math.max(0,best.end-1));
- const th=threshold();
- // A strong match may move either direction. Weak matches only advance when close.
- if(best.score>=th){
-   S.bad=0;S.good++;
-   // Do not jump backward on a tiny accidental match. A real backward retake needs a strong match.
-   if(newWord>=currentWord-2 || best.score>=.68){
-     const targetTokenIndex=findTokenIndex(newWord);
-     if(targetTokenIndex>=0 && targetTokenIndex!==S.pos){S.pos=targetTokenIndex;paint()}
-   }
-   setStatus("🎙️ Voice tracking","live");
- }else{
-   S.good=0;S.bad++;
-   // Hysteresis: do not freeze on a single bad ASR chunk.
-   if(S.bad>=7){
-     setStatus("⏸ Script से बाहर — वापस script पर बोलें","warn");
-     diag("Voice match नहीं मिला — script की line पर वापस आते ही re-sync होगा");
-   }else setStatus("… voice sync खोज रहा है","warn");
- }
+
+function findBest(query){
+  const q=toks(query);
+  if(q.length<2)return {score:0,pos:S.pos,end:S.pos};
+  const starts=candidateStarts(q);
+  let best={score:0,pos:S.pos,end:S.pos};
+  for(const p of starts){
+    const a=align(q,p);
+    let distancePenalty=0;
+    const d=p-S.pos;
+    if(d>0 && d>120)distancePenalty=.06;
+    if(d<0 && Math.abs(d)>80)distancePenalty=.04;
+    const score=Math.max(0,a.score-distancePenalty);
+    if(score>best.score)best={score,pos:p,end:a.end};
+  }
+  return best;
 }
-function findTokenIndex(wordIndex){
- let n=-1;for(let i=0;i<S.tokens.length;i++)if(S.tokens[i].type==="word"){n++;if(n===wordIndex)return i}return -1;
+
+function sensitivityThreshold(){
+  return S.sensitivity==="easy"?.48:S.sensitivity==="strict"?.68:.57;
 }
-function recognition(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){setStatus("इस browser में Speech Recognition नहीं है","bad");diag("Chrome/Edge/Safari में खोलें");return}
- if(S.recognition)try{S.recognition.stop()}catch(e){}
- const r=new SR();S.recognition=r;r.continuous=true;r.interimResults=true;r.maxAlternatives=3;r.lang=$("lang").value;
- r.onstart=()=>{S.listening=true;S.paused=false;setStatus("🎙️ सुन रहा है","live");$("mic").textContent="⏹ Voice Stop"};
- r.onresult=e=>{
-   let finalPart="",interim="";
-   for(let i=0;i<e.results.length;i++){
-     const x=e.results[i][0].transcript;
-     if(e.results[i].isFinal)finalPart+=" "+x; else interim+=" "+x;
-   }
-   if(finalPart.trim())S.finalText=(S.finalText+" "+finalPart).trim();
-   // Keep only recent final words; interim is always current and should not be duplicated.
-   const f=words(S.finalText).slice(-28).join(" ");
-   const i=interim.trim();
-   const combined=(f+" "+i).trim();
-   S.lastResult=combined;
-   applySpeech(combined);
- };
- r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"){S.listening=false;setStatus("Microphone permission denied","bad")}else if(e.error!=="aborted")setStatus("Voice error: "+e.error,"bad")};
- r.onend=()=>{if(S.listening&&!S.paused)setTimeout(()=>{try{r.start()}catch(e){}},180)};
- try{r.start()}catch(e){setStatus("Voice start नहीं हुआ","bad")}
+
+function updateFromTranscript(text,source){
+  const q=toks(text);
+  if(q.length<3)return;
+  const best=findBest(q.slice(-16));
+  S.score=best.score;
+  const threshold=sensitivityThreshold();
+  const strong=best.score>=threshold;
+  const near=Math.abs(best.pos-S.pos)<=130;
+  if(strong){
+    const delta=best.end-S.pos;
+    if(Math.abs(delta)>=1){
+      // Backward jumps need a stronger match to prevent accidental repeats.
+      if(delta<0 && best.score<Math.min(.80,threshold+.12)) return;
+      S.pos=Math.max(0,Math.min(S.tokens.length-1,best.end));
+      S.badTokens=0;
+      S.lastJump=Date.now();
+      renderPosition(false);
+    }
+  }else{
+    S.badTokens+=Math.min(8,q.length);
+  }
+  setStatus(strong?`Voice match ${Math.round(best.score*100)}%`:S.badTokens>35?"Script से बाहर — रुका हुआ":"सुन रहा है",strong?"live":(S.badTokens>35?"warn":"blue"));
+  showDiag(`${source}: "${text.slice(-150)}"  | match ${Math.round(best.score*100)}% | pos ${S.pos+1}/${S.tokens.length}`);
+  updateDebug(source,text,best);
 }
-function stop(){S.listening=false;if(S.recognition)try{S.recognition.stop()}catch(e){}$("mic").textContent="🎙️ Voice Start";setStatus("रुका हुआ","warn")}
-function pause(){S.paused=!S.paused;if(S.paused){if(S.recognition)try{S.recognition.stop()}catch(e){}setStatus("⏸ Pause","warn");$("pause").textContent="▶ Resume"}else{$("pause").textContent="⏸ Pause";S.bad=0;if(!S.listening)recognition()}}
-$("load").onclick=build;$("save").onclick=()=>{localStorage.setItem("gov_v3_script",S.script);diag("Script browser में save हो गई")};
-$("clear").onclick=()=>{$("scriptInput").value="";S.tokens=[];S.pos=0;S.script="";render()};
-$("mic").onclick=()=>S.listening?stop():recognition();$("pause").onclick=pause;
-$("restart").onclick=()=>jump(0);$("back").onclick=()=>jump(Math.max(0,S.pos-8));$("next").onclick=()=>jump(Math.min(S.tokens.length-1,S.pos+8));
-$("present").onclick=()=>document.body.classList.toggle("presentation");$("full").onclick=()=>document.documentElement.requestFullscreen?.();
+
+function parseScript(text){
+  S.script=text;
+  const parts=text.replace(/\r/g,"").split(/\n{2,}/);
+  S.tokens=[]; S.paras=[];
+  for(const p of parts){
+    const ws=toks(p);
+    if(ws.length){
+      const start=S.tokens.length;
+      S.tokens.push(...ws);
+      S.paras.push({start,end:S.tokens.length-1});
+    }
+  }
+  S.pos=0; buildIndex();
+  S.wordIndex=new Map();
+  S.tokens.forEach((w,i)=>{if(!S.wordIndex.has(w))S.wordIndex.set(w,[]);S.wordIndex.get(w).push(i)});
+  renderScript();
+}
+
+function renderScript(){
+  const text=$("text"); text.innerHTML="";
+  if(!S.tokens.length){text.innerHTML='<div style="color:#666;padding-top:15vh">Script load करें।</div>';return}
+  S.tokens.forEach((w,i)=>{
+    const s=document.createElement("span");s.className="word";s.textContent=w;s.dataset.i=i;
+    s.onclick=()=>{S.pos=i;renderPosition(true)}; text.appendChild(s);
+    if(i<S.tokens.length-1)text.appendChild(document.createTextNode(" "));
+    const para=S.paras.find(p=>p.end===i);
+    if(para && i<S.tokens.length-1)text.appendChild(document.createElement("br"));
+  });
+  renderPosition(true);
+}
+function renderPosition(center=true){
+  const els=$$(".word");
+  els.forEach((e,i)=>e.classList.toggle("done",i<S.pos));
+  const active=els[S.pos]; if(!active)return;
+  els.forEach(e=>e.classList.remove("active")); active.classList.add("active");
+  const r=$("reader"), target=active.offsetTop-r.clientHeight*(S.activeLine/100);
+  r.scrollTo({top:Math.max(0,target),behavior:center?"smooth":"auto"});
+  const pct=Math.round((S.pos/Math.max(1,S.tokens.length-1))*100);
+  $("meter").style.width=pct+"%"; $("position").textContent=pct+"%"; $("score").textContent=Math.round(S.score*100)+"%";
+}
+function $$(sel){return [...document.querySelectorAll(sel)]}
+function setStatus(t,cls=""){const e=$("status");e.textContent=t;e.className="status "+cls}
+function showDiag(t){const e=$("diag");e.textContent=t;e.classList.remove("hidden");clearTimeout(showDiag.t);showDiag.t=setTimeout(()=>e.classList.add("hidden"),4200)}
+function updateDebug(source,text,best){
+  S.debug.unshift(`${new Date().toLocaleTimeString()} [${source}] score=${Math.round(best.score*100)} pos=${best.pos} end=${best.end}\n${text}`);
+  S.debug=S.debug.slice(0,12);
+  $("debugText").textContent=S.debug.join("\n\n---\n\n");
+  $("spoken").textContent=toks(text).length;
+  $("engineState").textContent=S.engine==="whisper"?"Whisper Local":"Browser Speech";
+}
+
+async function loadWhisper(){
+  if(S.whisper){setStatus("Whisper ready","live");return}
+  try{
+    $("loadWhisper").disabled=true;$("modelState").textContent="Whisper model loading… पहली बार समय लगेगा";setStatus("Whisper model loading…","blue");
+    const device=("gpu" in navigator)?"webgpu":"wasm";
+    // Multilingual Whisper Tiny; Hindi is supported.
+    S.whisper=await pipeline("automatic-speech-recognition","Xenova/whisper-tiny",{
+      device, dtype: device==="webgpu"?"q4":"q8"
+    });
+    $("modelState").textContent=`Ready (${device})`;
+    setStatus("Whisper ready","live");
+  }catch(err){
+    console.error(err);$("modelState").textContent="Load failed: "+err.message;setStatus("Whisper load failed","bad");showDiag(err.message);
+  }finally{$("loadWhisper").disabled=false}
+}
+
+function resample(input,inRate,outRate){
+  if(inRate===outRate)return input;
+  const ratio=inRate/outRate, len=Math.round(input.length/ratio), out=new Float32Array(len);
+  for(let i=0;i<len;i++){
+    const pos=i*ratio, idx=Math.floor(pos), frac=pos-idx;
+    const a=input[idx]||0,b=input[idx+1]||a;out[i]=a+(b-a)*frac;
+  }
+  return out;
+}
+
+async function startWhisper(){
+  await loadWhisper(); if(!S.whisper)return;
+  if(S.listening)return;
+  try{
+    S.stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    S.audio=new (window.AudioContext||window.webkitAudioContext)();
+    await S.audio.resume();
+    S.sampleRate=S.audio.sampleRate;
+    S.source=S.audio.createMediaStreamSource(S.stream);
+    S.processor=S.audio.createScriptProcessor(4096,1,1);
+    S.pcm=[];S.sample16=[];S.lastWhisperAt=performance.now();S.listening=true;S.paused=false;
+    S.source.connect(S.processor);S.processor.connect(S.audio.destination);
+    S.processor.onaudioprocess=e=>{
+      if(!S.listening)return;
+      const ch=e.inputBuffer.getChannelData(0);
+      for(let i=0;i<ch.length;i++)S.pcm.push(ch[i]);
+      const max=S.sampleRate*7;
+      if(S.pcm.length>max)S.pcm.splice(0,S.pcm.length-max);
+      const now=performance.now();
+      if(now-S.lastWhisperAt>2600 && !S.whisperBusy) processWhisper();
+    };
+    $("mic").textContent="🎙️ Whisper Listening";setStatus("Whisper सुन रहा है","live");showDiag("Whisper Local: बोलना शुरू करें");
+    processWhisper();
+  }catch(err){setStatus("Mic error","bad");showDiag(err.message)}
+}
+
+async function processWhisper(){
+  if(!S.listening||S.whisperBusy||!S.whisper||!S.pcm.length)return;
+  S.whisperBusy=true;S.lastWhisperAt=performance.now();
+  try{
+    const raw=Float32Array.from(S.pcm);
+    const audio16=resample(raw,S.sampleRate,16000);
+    // Use the most recent ~5 seconds. Overlap is intentional; the matcher handles repeats.
+    const clip=audio16.slice(Math.max(0,audio16.length-16000*5));
+    const opts={chunk_length_s:5,stride_length_s:1,task:"transcribe"};
+    const l=$("lang").value;
+    if(l==="hi")opts.language="hi";
+    else if(l==="en")opts.language="en";
+    const out=await S.whisper(clip,opts);
+    const text=(out?.text||"").trim();
+    if(text)updateFromTranscript(text,"Whisper");
+  }catch(err){console.error(err);showDiag("Whisper error: "+err.message)}
+  finally{S.whisperBusy=false;if(S.listening&&S.pcm.length>0)setTimeout(processWhisper,250)}
+}
+
+function stopWhisper(){
+  S.listening=false;
+  try{S.processor?.disconnect()}catch{}
+  try{S.source?.disconnect()}catch{}
+  try{S.audio?.close()}catch{}
+  S.stream?.getTracks().forEach(t=>t.stop());
+  S.processor=null;S.source=null;S.audio=null;S.stream=null;S.pcm=[];
+  $("mic").textContent="🎙️ Voice Start";setStatus("रुका हुआ","warn");
+}
+
+function startWebSpeech(){
+  const C=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!C){setStatus("Browser Speech unsupported","bad");showDiag("इस browser में SpeechRecognition नहीं है। ASR → Whisper Local चुनें।");return}
+  if(S.listening)return;
+  const r=new C();S.speechRec=r;S.engine="web";r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
+  r.lang=$("lang").value==="en"?"en-IN":"hi-IN";
+  r.onstart=()=>{S.listening=true;setStatus("Browser Speech सुन रहा है","live");$("mic").textContent="🎙️ Listening"};
+  r.onresult=e=>{
+    let text="";
+    for(let i=e.resultIndex;i<e.results.length;i++)text+=e.results[i][0].transcript+" ";
+    if(text.trim())updateFromTranscript(text,"WebSpeech");
+  };
+  r.onerror=e=>{showDiag("Speech error: "+e.error);if(e.error==="not-allowed")setStatus("Mic permission denied","bad")};
+  r.onend=()=>{if(S.listening){setTimeout(()=>{try{r.start()}catch{}},250)}};
+  try{r.start()}catch(err){showDiag(err.message)}
+}
+function stopAll(){S.listening=false;try{S.speechRec?.stop()}catch{};S.speechRec=null;stopWhisper()}
+
+$("load").onclick=()=>{parseScript($("scriptInput").value);localStorage.setItem("gov-v4-script",$("scriptInput").value);setStatus("Script loaded","live")};
+$("save").onclick=()=>localStorage.setItem("gov-v4-script",$("scriptInput").value);
+$("clear").onclick=()=>{$("scriptInput").value="";localStorage.removeItem("gov-v4-script");parseScript("")};
+$("loadWhisper").onclick=loadWhisper;
+$("mic").onclick=()=>{S.engine=$("engine").value;if(S.engine==="whisper")startWhisper();else startWebSpeech()};
+$("stop").onclick=stopAll;
+$("restart").onclick=()=>{S.pos=0;S.score=0;renderPosition(true)};
+$("back").onclick=()=>{S.pos=Math.max(0,S.pos-12);renderPosition(true)};
+$("next").onclick=()=>{S.pos=Math.min(S.tokens.length-1,S.pos+12);renderPosition(true)};
+$("present").onclick=()=>document.body.classList.toggle("presentation");
+$("full").onclick=()=>document.documentElement.requestFullscreen?.();
+$("mirror").onclick=()=>document.body.classList.toggle("mirror");
+$("rotate").onclick=()=>document.body.classList.toggle("rotated");
+$("debugBtn").onclick=()=>{$("debug").classList.toggle("hidden")};
+$("engine").onchange=e=>{if(S.listening)stopAll();S.engine=e.target.value;setStatus(e.target.value==="whisper"?"Whisper mode selected":"Browser Speech selected","blue")};
+$("lang").onchange=()=>{if(S.listening){showDiag("Language बदलने के बाद Voice Stop/Start करें")}};
+$("sensitivity").onchange=e=>S.sensitivity=e.target.value;
+$("font").oninput=e=>{$("text").style.fontSize=e.target.value+"px";S.font=+e.target.value};
+$("line").oninput=e=>{$("text").style.lineHeight=(+e.target.value/100);S.line=+e.target.value};
+$("active").oninput=e=>{S.activeLine=+e.target.value;renderPosition(false)};
 $("editBtn").onclick=()=>$("editor").classList.toggle("open");
-$("font").oninput=e=>$("text").style.fontSize=e.target.value+"px";
-$("line").oninput=e=>$("text").style.lineHeight=e.target.value/100;
-$("active").oninput=e=>{$(".eyeline").style.top=e.target.value+"%"};
-$("mirror").onclick=()=>{S.mirror=!S.mirror;document.body.classList.toggle("mirror",S.mirror);$("mirror").classList.toggle("active",S.mirror)};
-$("rotate").onclick=()=>{S.rotate=!S.rotate;$("reader").classList.toggle("rotated",S.rotate);$("rotate").classList.toggle("active",S.rotate)};
-const old=localStorage.getItem("gov_v3_script");if(old){$("scriptInput").value=old;build()}else render();
-})();
+
+const saved=localStorage.getItem("gov-v4-script");if(saved){$("scriptInput").value=saved;parseScript(saved)}
+setStatus("Whisper Local तैयार","blue");
 </script>
-</body></html>
+</body>
+</html>

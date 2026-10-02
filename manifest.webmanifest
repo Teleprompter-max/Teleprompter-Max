@@ -1,7 +1,7 @@
 {
-  "name": "GOV Voice Teleprompter v3",
-  "short_name": "GOV Prompter",
-  "start_url": ".",
+  "name": "GOV Voice Teleprompter v4",
+  "short_name": "GOV Teleprompter",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#070809",
   "theme_color": "#ffd21c",

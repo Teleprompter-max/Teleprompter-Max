@@ -1,0 +1,10 @@
+{
+  "name": "GOV Voice Teleprompter",
+  "short_name": "GOV Prompter",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#07080a",
+  "theme_color": "#ffd21c",
+  "lang": "hi-IN",
+  "icons": []
+}

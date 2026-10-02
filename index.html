@@ -2,208 +2,246 @@
 <html lang="hi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Voice Teleprompter</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090b">
+<link rel="manifest" href="manifest.webmanifest">
+<title>GOV Voice Teleprompter</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;background:#101114;color:#eee}
-.app{min-height:100vh;display:flex;flex-direction:column}.top{padding:12px 16px;border-bottom:1px solid #292b31;background:#17181c;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.brand{font-weight:800;font-size:20px;margin-right:auto}.brand span{color:#ffd21c}.status{font-size:13px;padding:7px 10px;border-radius:20px;background:#292b31}.status.live{background:#183d25;color:#9dffb4}.status.pause{background:#4b3514;color:#ffd789}
-button,select,input{font:inherit}button{border:0;border-radius:8px;padding:9px 12px;background:#2b2e35;color:#fff;cursor:pointer}button.primary{background:#ffd21c;color:#111;font-weight:800}button.danger{background:#8e2630}button:disabled{opacity:.45;cursor:not-allowed}
-.controls{padding:10px 16px;background:#1c1e23;border-bottom:1px solid #292b31;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.controls label{font-size:12px;color:#aaa}.controls input[type=range]{width:120px}.controls input[type=number]{width:70px;background:#2b2e35;color:#fff;border:0;padding:8px;border-radius:7px}
-.main{display:grid;grid-template-columns:330px 1fr;flex:1;min-height:0}.side{padding:14px;border-right:1px solid #292b31;background:#151619;display:flex;flex-direction:column;gap:10px}.side textarea{flex:1;min-height:350px;resize:none;background:#0d0e10;color:#eee;border:1px solid #30323a;border-radius:8px;padding:12px;font-size:16px;line-height:1.7}.hint{font-size:12px;color:#999;line-height:1.5}.reader{position:relative;overflow:auto;padding:12vh 8vw 55vh;background:#050607}.script{max-width:1100px;margin:auto;font-size:38px;line-height:1.7;letter-spacing:.01em}.seg{padding:3px 8px;border-radius:6px;transition:.15s}.seg.done{color:#555}.seg.current{background:rgba(255,210,28,.13);box-shadow:0 0 0 1px rgba(255,210,28,.25)}.seg.near{color:#bbb}.seg.mismatch{color:#ff7d7d}.empty{color:#777;text-align:center;padding:20vh 20px}
-.meter{height:4px;background:#272a30}.meter>div{height:100%;background:#ffd21c;width:0}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#252830;border:1px solid #3b3e47;padding:10px 14px;border-radius:8px;display:none;z-index:20}
-@media(max-width:800px){.main{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid #292b31;max-height:45vh}.script{font-size:30px}.reader{padding-left:5vw;padding-right:5vw}}
+:root{--bg:#07080a;--panel:#111318;--panel2:#171920;--line:#292d36;--text:#f4f4f4;--muted:#9da3ae;--accent:#ffd21c;--good:#43d17b;--warn:#ffb83d;--bad:#ff6666;--reader:#050608}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Devanagari","Noto Sans",sans-serif}
+button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:10px 13px;background:#272b33;color:#fff;cursor:pointer}button:hover{filter:brightness(1.12)}button.primary{background:var(--accent);color:#101010;font-weight:800}button.active{outline:2px solid var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}
+.app{height:100%;display:flex;flex-direction:column}.top{display:flex;align-items:center;gap:9px;padding:10px 13px;background:#101216;border-bottom:1px solid var(--line);z-index:10;flex-wrap:wrap}.brand{font-weight:850;font-size:19px;margin-right:auto;white-space:nowrap}.brand b{color:var(--accent)}
+.status{font-size:12px;padding:7px 10px;border-radius:99px;background:#272b33;color:#c9ced7}.status.live{background:#123b24;color:#8ef0b0}.status.warn{background:#46300e;color:#ffd68b}.status.bad{background:#481d22;color:#ffaaaa}
+.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;padding:8px 13px;background:#17191e;border-bottom:1px solid var(--line);font-size:12px}.toolbar label{display:flex;align-items:center;gap:6px;color:#aeb3bd}.toolbar input[type=range]{width:110px}.toolbar select,.toolbar input[type=number]{background:#252932;border:1px solid #333844;color:#fff;border-radius:8px;padding:7px}
+.meter{height:4px;background:#242831}.meter>div{height:100%;width:0;background:var(--accent);transition:width .25s}
+.main{display:grid;grid-template-columns:330px 1fr;flex:1;min-height:0}.side{background:#101216;border-right:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:9px;min-height:0}.side textarea{width:100%;min-height:260px;flex:1;resize:none;background:#08090b;border:1px solid #30343d;color:#eee;border-radius:10px;padding:12px;font-size:16px;line-height:1.65}.row{display:flex;gap:7px}.row>*{flex:1}.hint{font-size:11px;line-height:1.5;color:#9299a5}.small{font-size:11px;color:#858c97}.history{max-height:140px;overflow:auto;display:flex;flex-direction:column;gap:5px}.history button{text-align:left;font-size:11px;padding:7px;background:#1c2027}
+.reader{position:relative;overflow:auto;background:var(--reader);padding:42vh 7vw 55vh;scroll-behavior:smooth}.script{max-width:1100px;margin:auto;text-align:center;font-size:42px;line-height:1.65;letter-spacing:.005em}.seg{display:block;padding:3px 9px;border-radius:8px;color:#d9dbe0;transition:background .18s,color .18s,opacity .18s}.seg.done{color:#555b65}.seg.current{color:#fff;background:rgba(255,210,28,.10);box-shadow:0 0 0 1px rgba(255,210,28,.18)}.seg.near{color:#9ea4af}.seg mark{background:transparent;color:inherit}.seg.cue{color:#7e8794;font-style:italic}.seg:hover{background:rgba(255,255,255,.05);cursor:pointer}
+.active-line{position:fixed;left:0;right:0;top:50%;height:1px;background:rgba(255,210,28,.13);pointer-events:none;z-index:2}.rec-dot{width:9px;height:9px;border-radius:50%;background:var(--bad);display:inline-block;margin-right:5px;vertical-align:middle;box-shadow:0 0 0 4px rgba(255,102,102,.12)}
+.mini{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#181b21dd;border:1px solid #353943;border-radius:12px;padding:7px 11px;max-width:min(700px,92vw);font-size:11px;color:#aeb4bf;backdrop-filter:blur(8px);z-index:20;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel{position:fixed;right:14px;bottom:14px;background:#15181ddd;border:1px solid #343842;border-radius:12px;padding:9px 11px;z-index:15;backdrop-filter:blur(8px);font-size:11px;color:#aeb4bf}.panel strong{color:#fff}.hidden{display:none!important}
+.empty{color:#6e7580;padding:20vh 20px}.mirror{transform:scaleX(-1) rotate(180deg)}.rotate{transform:rotate(90deg);transform-origin:center center}
+@media(max-width:850px){.main{grid-template-columns:1fr}.side{position:absolute;z-index:30;left:8px;right:8px;top:112px;bottom:8px;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px #000b;display:none}.side.open{display:flex}.reader{padding-left:5vw;padding-right:5vw}.script{font-size:31px}.mobile-editor{display:inline-block!important}}
+.mobile-editor{display:none}
+body.presentation .top,body.presentation .toolbar,body.presentation .side{display:none!important}body.presentation .main{display:block}body.presentation .reader{height:100%;padding-left:7vw;padding-right:7vw}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top">
-    <div class="brand"><span>GOV</span> Voice Teleprompter</div>
-    <div id="status" class="status">तैयार</div>
-    <button id="micBtn" class="primary">🎙️ Voice Start</button>
-    <button id="pauseBtn">⏸ रोकें</button>
-    <button id="fullBtn">⛶ Fullscreen</button>
-  </div>
-  <div class="controls">
-    <button id="scrollUp">↑</button><button id="scrollDown">↓</button>
-    <label>अक्षर आकार <input id="fontSize" type="range" min="22" max="72" value="38"></label>
-    <label>Matching <input id="tolerance" type="range" min="15" max="60" value="35"></label>
-    <label>Scroll gap <input id="gap" type="number" min="0" max="10" step=".5" value="1.5"></label>
-    <button id="resetBtn">↺ शुरुआत</button>
+  <header class="top">
+    <div class="brand"><b>GOV</b> Voice Teleprompter</div>
+    <span id="status" class="status">तैयार</span>
+    <button id="editorBtn" class="mobile-editor">☰ Script</button>
+    <button id="mic" class="primary">🎙️ Voice Start</button>
+    <button id="pause">⏸ Pause</button>
+    <button id="present">▶ Presentation</button>
+    <button id="full">⛶</button>
+  </header>
+  <div class="toolbar">
+    <label>Font <input id="font" type="range" min="24" max="80" value="42"></label>
+    <label>Line <input id="line" type="range" min="120" max="210" value="165"></label>
+    <label>Position <input id="position" type="range" min="30" max="70" value="50"></label>
+    <label>Language <select id="lang"><option value="hi-IN">Hindi</option><option value="en-IN">English (India)</option><option value="auto">Auto</option></select></label>
+    <label>Mode <select id="mode"><option value="voice">Voice Track</option><option value="sound">Sound Scroll</option><option value="manual">Manual</option></select></label>
+    <button id="mirror">🪞 Mirror</button>
+    <button id="rotate">↻ Rotate</button>
+    <button id="back">← Back</button>
+    <button id="next">Next →</button>
+    <button id="restart">↺ Start</button>
   </div>
   <div class="meter"><div id="progress"></div></div>
-  <div class="main">
-    <aside class="side">
-      <textarea id="input" placeholder="अपनी हिंदी / Hinglish script यहाँ paste करें..."></textarea>
-      <div class="hint">
-        Voice mode में बोलते समय छोटे शब्द-अंतर, विराम और सामान्य Hinglish/Hindi variation को tolerate किया जाएगा।
-        यदि आपकी बोली script से पर्याप्त दूर चली जाती है तो prompter रुक जाएगा। Script पर लौटते ही यह पास के हिस्से को फिर से पकड़ने की कोशिश करेगा।
-      </div>
-      <button id="loadBtn" class="primary">Script Load करें</button>
-      <button id="saveBtn">Browser में Save</button>
-      <button id="clearBtn">Clear</button>
+  <main class="main">
+    <aside id="side" class="side">
+      <textarea id="input" placeholder="अपनी Hindi / Hinglish script यहाँ paste करें...&#10;&#10;[pause] जैसे cues को पढ़ने से बचाने के लिए square brackets इस्तेमाल कर सकते हैं।"></textarea>
+      <div class="row"><button id="load" class="primary">Script Load</button><button id="save">Save</button><button id="clear">Clear</button></div>
+      <div class="small">Recent scripts</div>
+      <div id="history" class="history"></div>
+      <div class="hint">Voice Track पूरी script में बोले गए शब्द खोजता है। थोड़ी wording अलग हो, कुछ शब्द छूटें, pause हो या आप आगे/पीछे जाएँ तो यह फिर से sync करने की कोशिश करेगा। लगातार स्पष्ट mismatch होने पर यह रुकेगा।</div>
     </aside>
-    <main id="reader" class="reader">
-      <div id="script" class="script"><div class="empty">Script paste करके “Script Load करें” दबाएँ।</div></div>
-    </main>
-  </div>
+    <section id="reader" class="reader">
+      <div id="script" class="script"><div class="empty">Script paste करके “Script Load” दबाएँ।</div></div>
+    </section>
+  </main>
 </div>
-<div id="toast" class="toast"></div>
+<div class="active-line"></div>
+<div id="mini" class="mini hidden"></div>
+<div id="panel" class="panel">Match: <strong id="score">—</strong> · Position: <strong id="pos">0%</strong></div>
 
 <script>
 (() => {
 const $=id=>document.getElementById(id);
-const input=$('input'), scriptEl=$('script'), reader=$('reader'), status=$('status'), micBtn=$('micBtn'), pauseBtn=$('pauseBtn');
-let segments=[], idx=0, recognition=null, listening=false, paused=true, lastTranscript='', manual=false;
-
+const state={segments:[], idx:0, listening:false, paused:false, recognition:null, finalWords:[], lastMatch:0, badStreak:0, mirror:false, rotate:false, mode:'voice', scriptKey:''};
+const filler=new Set("a an the and or to of in on is are was were for with from this that it you your i we they he she hai hain tha thi the ho hoga hogi hote ko ke ka ki mein me se par aur ya ye yeh woh wo ek ab to phir dekhiye dekhen dosto matlab yani bas bhi hi na nahi kiya kya kaise kyunki kyon kyunki agar lekin jab jaisa jaise tak".split(" "));
+const normMap={"क़":"क","ख़":"ख","ग़":"ग","ज़":"ज","ड़":"ड","ढ़":"ढ","फ़":"फ","ऱ":"र"};
 function normalize(s){
-  return s.toLowerCase()
-   .replace(/[।॥!?;:,।"“”‘’'()\\[\\]{}]/g,' ')
-   .replace(/[०-९]/g,c=>String('०१२३४५६७८९'.indexOf(c)))
-   .replace(/[^a-z0-9\\u0900-\\u097f\\s]/g,' ')
-   .replace(/\\s+/g,' ').trim();
+  s=String(s||"").toLowerCase().replace(/[क़ख़ग़ज़ड़ढ़फ़ऱ]/g,c=>normMap[c]||c);
+  return s.normalize("NFC").replace(/[।॥!?;:,."“”‘’'(){}[\]<>]/g," ")
+    .replace(/[-–—_/|]/g," ").replace(/\s+/g," ").trim();
 }
-function words(s){return normalize(s).split(' ').filter(Boolean)}
-function editDistance(a,b){
- const A=words(a),B=words(b),m=A.length,n=B.length;
- if(!m)return n;if(!n)return m;
- let prev=Array.from({length:n+1},(_,i)=>i);
- for(let i=1;i<=m;i++){
-  const cur=[i];
-  for(let j=1;j<=n;j++){
-   const sub=prev[j-1]+(A[i-1]===B[j-1]?0:1);
-   cur[j]=Math.min(cur[j-1]+1,prev[j]+1,sub);
-  } prev=cur;
- } return prev[n];
+function toks(s){return normalize(s).split(" ").filter(Boolean)}
+function contentToks(s){return toks(s).filter(x=>x.length>1 && !filler.has(x))}
+function lev(a,b){
+  const A=a,B=b,m=A.length,n=B.length;
+  if(!m)return n;if(!n)return m;
+  let p=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){let c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(A[i-1]===B[j-1]?0:1));p=c}return p[n];
 }
 function similarity(a,b){
- const A=words(a),B=words(b); if(!A.length||!B.length)return 0;
- const d=editDistance(a,b), max=Math.max(A.length,B.length);
- return Math.max(0,1-d/max);
+  const A=contentToks(a),B=contentToks(b);if(!A.length||!B.length)return 0;
+  const d=lev(A,B);return Math.max(0,1-d/Math.max(A.length,B.length));
 }
-function makeChunks(text){
- const raw=text.replace(/\\r/g,'').split(/(?<=[।?!])\\s+|\\n+/).map(s=>s.trim()).filter(Boolean);
- const out=[];
- raw.forEach(s=>{
-   const w=words(s);
-   if(w.length<=28) out.push(s);
-   else {
-     const toks=s.split(/\\s+/); for(let i=0;i<toks.length;i+=20) out.push(toks.slice(i,i+20).join(' '));
-   }
- });
- return out;
+function subseqScore(spoken, target){
+  const A=contentToks(spoken),B=contentToks(target);if(!A.length||!B.length)return 0;
+  let best=0;
+  for(let start=0;start<B.length;start++){
+    let matched=0,ai=0;
+    for(let bi=start;bi<B.length && ai<A.length;bi++){
+      if(A[ai]===B[bi]){matched++;ai++}
+      else if(bi+1<B.length && A[ai]===B[bi+1]){bi++;matched++;ai++}
+    }
+    best=Math.max(best,matched/Math.max(2,Math.min(A.length,B.length)));
+  }
+  return best;
+}
+function anchorScore(spoken,target){
+  const A=contentToks(spoken),B=contentToks(target);if(!A.length||!B.length)return 0;
+  let best=0;
+  for(let i=0;i<A.length;i++)for(let j=0;j<B.length;j++){let k=0;while(i+k<A.length&&j+k<B.length&&A[i+k]===B[j+k])k++;best=Math.max(best,k)}
+  return Math.min(1,best/Math.min(5,Math.max(2,A.length)));
+}
+function score(spoken,target){
+  return Math.max(similarity(spoken,target)*.58,subseqScore(spoken,target)*.72,anchorScore(spoken,target)*.85);
+}
+function splitScript(text){
+  const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean), out=[];
+  for(const line of lines){
+    const cue=/^\[[^\]]+\]$/.test(line);
+    if(cue){out.push({text:line,cue:true});continue}
+    const parts=line.match(/[^.!?।॥]+[.!?।॥]?/g)||[line];
+    for(const p of parts.map(x=>x.trim()).filter(Boolean)){
+      const w=toks(p);
+      if(w.length<=28)out.push({text:p,cue:false});
+      else for(let i=0;i<w.length;i+=22)out.push({text:w.slice(i,i+22).join(" "),cue:false});
+    }
+  }
+  return out;
 }
 function render(){
- scriptEl.innerHTML='';
- if(!segments.length){scriptEl.innerHTML='<div class="empty">Script paste करके “Script Load करें” दबाएँ।';return;}
- segments.forEach((t,i)=>{const d=document.createElement('span');d.className='seg';d.dataset.i=i;d.textContent=t+' ';scriptEl.appendChild(d);});
- updateView();
+  const el=$("script");el.innerHTML="";
+  if(!state.segments.length){el.innerHTML='<div class="empty">Script paste करके “Script Load” दबाएँ।</div>';return}
+  state.segments.forEach((s,i)=>{
+    const d=document.createElement("span");d.className="seg "+(s.cue?"cue":"");d.dataset.i=i;d.textContent=s.text+" ";
+    d.onclick=()=>jump(i);el.appendChild(d);
+  });highlight();
 }
-function updateView(){
- document.querySelectorAll('.seg').forEach((e,i)=>{
-  e.classList.toggle('done',i<idx);e.classList.toggle('current',i===idx);e.classList.toggle('near',Math.abs(i-idx)<=2&&i>idx);
- });
- const el=document.querySelector('.seg.current');
- if(el && !manual) el.scrollIntoView({behavior:'smooth',block:'center'});
- $('progress').style.width=(segments.length?Math.min(100,idx/segments.length*100):0)+'%';
+function highlight(){
+  document.querySelectorAll(".seg").forEach((e,i)=>{e.classList.toggle("done",i<state.idx);e.classList.toggle("current",i===state.idx);e.classList.toggle("near",Math.abs(i-state.idx)<=2)});
+  const cur=document.querySelector('.seg[data-i="'+state.idx+'"]');
+  if(cur && state.listening)cur.scrollIntoView({behavior:"smooth",block:"center"});
+  const pct=state.segments.length?Math.round(state.idx/(state.segments.length-1)*100):0;
+  $("progress").style.width=pct+"%";$("pos").textContent=pct+"%";
 }
-function setStatus(t,cls=''){status.textContent=t;status.className='status '+cls}
-function toast(t){const x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1800)}
-
-function findMatch(transcript){
- const tol=Number($('tolerance').value)/100;
- const spoken=words(transcript); if(!spoken.length)return {score:0,pos:idx};
- // Compare a sliding window around current position. This prevents jumping to an unrelated repeated phrase.
- let best={score:0,pos:idx};
- const start=Math.max(0,idx-2), end=Math.min(segments.length-1,idx+7);
- for(let p=start;p<=end;p++){
-   let candidate=segments[p];
-   // Current and nearby chunks; using 2-4 chunks allows natural speech to span sentence boundaries.
-   for(let span=1;span<=4 && p+span-1<segments.length;span++){
-     const text=segments.slice(p,p+span).join(' ');
-     const sc=similarity(transcript,text);
-     if(sc>best.score)best={score:sc,pos:p};
-   }
- }
- // Also compare only the first/last portions of current chunk to handle long sentences.
- const cur=segments[idx]||'';
- const cw=words(cur);
- if(spoken.length>=3 && cw.length>=spoken.length){
-   for(let k=0;k<=cw.length-spoken.length;k++){
-     const local=cw.slice(k,k+spoken.length).join(' ');
-     const sc=similarity(transcript,local);
-     if(sc>best.score)best={score:sc,pos:idx};
-   }
- }
- return {score:best.score,pos:best.pos,accepted:best.score>=tol};
+function jump(i){state.idx=Math.max(0,Math.min(state.segments.length-1,i));state.badStreak=0;highlight()}
+function setStatus(t,type=""){const s=$("status");s.textContent=t;s.className="status "+type}
+function showMini(t){const m=$("mini");m.textContent=t;m.classList.remove("hidden");clearTimeout(showMini.t);showMini.t=setTimeout(()=>m.classList.add("hidden"),1800)}
+function buildScript(){
+  const text=$("input").value.trim();state.segments=splitScript(text);state.idx=0;state.badStreak=0;state.finalWords=[];state.scriptKey=text.slice(0,100);
+  localStorage.setItem("gov_script",text);render();showMini(state.segments.length+" हिस्से तैयार");
 }
-
-function processSpeech(text){
- if(paused||!segments.length)return;
- const r=findMatch(text);
- lastTranscript=text;
- if(r.score>=Number($('tolerance').value)/100){
-   // Move only when the matched area is ahead or current; avoid backward jumps.
-   if(r.pos>=idx-1){
-     idx=Math.min(segments.length-1,Math.max(idx,r.pos));
-     updateView();
-     setStatus('● Script के साथ चल रहा है','live');
-   }
- } else {
-   setStatus('⏸ Script से बाहर — रुका हुआ','pause');
-   paused=true;
-   micBtn.textContent='🎙️ Resume Voice';
- }
+function nearbyWindow(center){
+  const arr=[];
+  const start=Math.max(0,center-4),end=Math.min(state.segments.length,center+35);
+  for(let i=start;i<end;i++)arr.push(i);
+  return arr;
 }
-
+function matchSpeech(spoken){
+  if(!spoken || !state.segments.length)return;
+  const clean=normalize(spoken);if(!clean)return;
+  let best={i:state.idx,score:0};
+  const candidates=nearbyWindow(state.idx);
+  // Whole-script fallback is deliberately sampled broadly to handle skipped paragraphs/backtracking.
+  const step=Math.max(1,Math.floor(state.segments.length/120));
+  for(let i=0;i<state.segments.length;i+=step)candidates.push(i);
+  for(let i of candidates){
+    const s=state.segments[i]; if(s.cue)continue;
+    let local=score(clean,s.text);
+    // Combine adjacent segments so a recognition result containing half of one line and half of the next can sync.
+    if(i+1<state.segments.length)local=Math.max(local,score(clean,s.text+" "+state.segments[i+1].text)*.96);
+    if(i+2<state.segments.length)local=Math.max(local,score(clean,s.text+" "+state.segments[i+1].text+" "+state.segments[i+2].text)*.90);
+    // Favor positions close to current, but never enough to defeat a clear match elsewhere.
+    const dist=Math.abs(i-state.idx);
+    const proximity=dist<=4?1:dist<=12?.97:dist<=35?.94:1;
+    local*=proximity;
+    if(local>best.score)best={i,score:local};
+  }
+  $("score").textContent=Math.round(best.score*100)+"%";
+  const threshold=state.mode==="voice"?0.40:0.0;
+  if(state.mode!=="voice")return;
+  if(best.score>=threshold){
+    state.badStreak=0;
+    if(best.i!==state.idx){
+      state.idx=best.i;highlight();
+    }
+    setStatus("🎙️ Voice tracking","live");
+  }else{
+    state.badStreak++;
+    if(state.badStreak>=3){
+      state.paused=true;
+      setStatus("⏸ Script से बाहर / फिर से sync करें","warn");
+      showMini("आवाज़ script से match नहीं हो रही — वापस script पर बोलें");
+    }else setStatus("… Script खोज रहा है","warn");
+  }
+}
 function startRecognition(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){toast('इस browser में Speech Recognition उपलब्ध नहीं है। Chrome/Edge इस्तेमाल करें।');return;}
- if(recognition)try{recognition.stop()}catch(e){}
- recognition=new SR();
- recognition.lang='hi-IN';
- recognition.continuous=true;
- recognition.interimResults=true;
- recognition.maxAlternatives=3;
- recognition.onstart=()=>{listening=true;setStatus('● सुन रहा है','live');micBtn.textContent='🛑 Voice Stop'};
- recognition.onresult=e=>{
-   let finalText='';
-   for(let i=e.resultIndex;i<e.results.length;i++){
-     for(let a=0;a<Math.min(3,e.results[i].length);a++){
-       const t=e.results[i][a].transcript.trim();
-       if(t.length>finalText.length)finalText=t;
-     }
-   }
-   if(finalText)processSpeech(finalText);
- };
- recognition.onerror=e=>{
-   if(e.error==='not-allowed')toast('Microphone permission दें।');
-   else if(e.error!=='no-speech')toast('Voice recognition: '+e.error);
- };
- recognition.onend=()=>{listening=false;if(!paused){setTimeout(()=>{try{recognition.start()}catch(e){}},250)}else setStatus('रुका हुआ','pause')};
- try{recognition.start()}catch(e){}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus("Browser में voice recognition उपलब्ध नहीं","bad");return}
+  if(state.recognition)try{state.recognition.stop()}catch(e){}
+  const r=new SR();state.recognition=r;r.continuous=true;r.interimResults=true;r.maxAlternatives=3;
+  r.lang=$("lang").value==="auto"?"hi-IN":$("lang").value;
+  r.onstart=()=>{state.listening=true;state.paused=false;setStatus("🎙️ सुन रहा है","live");$("mic").textContent="⏹ Voice Stop"};
+  r.onresult=e=>{
+    if(state.mode==="sound"){setStatus("🎙️ Sound scroll","live");return}
+    let text="";
+    for(let i=e.resultIndex;i<e.results.length;i++)text+=" "+e.results[i][0].transcript;
+    const all=(state.finalWords.join(" ")+" "+text).trim();
+    const wordsNow=toks(all);
+    state.finalWords=wordsNow.slice(-45);
+    matchSpeech(state.finalWords.join(" "));
+  };
+  r.onerror=e=>{if(e.error!=="aborted")setStatus("Voice error: "+e.error,"bad")};
+  r.onend=()=>{if(state.listening&&!state.paused){setTimeout(()=>{try{r.start()}catch(e){}},250)}};
+  try{r.start()}catch(e){}
 }
-micBtn.onclick=()=>{
- if(!segments.length){toast('पहले script load करें।');return}
- if(listening){paused=true;try{recognition.stop()}catch(e){};setStatus('रुका हुआ','pause');micBtn.textContent='🎙️ Voice Start'}
- else {paused=false;startRecognition();setStatus('● Script tracking','live')}
-};
-pauseBtn.onclick=()=>{
- paused=!paused;
- pauseBtn.textContent=paused?'▶ चलाएँ':'⏸ रोकें';
- if(paused){try{recognition&&recognition.stop()}catch(e){};setStatus('रुका हुआ','pause');}
- else {startRecognition();}
-};
-$('loadBtn').onclick=()=>{segments=makeChunks(input.value);idx=0;paused=true;render();setStatus('तैयार');toast(segments.length+' script sections loaded');};
-$('resetBtn').onclick=()=>{idx=0;paused=true;render();setStatus('शुरुआत पर');};
-$('clearBtn').onclick=()=>{input.value='';segments=[];idx=0;render();};
-$('saveBtn').onclick=()=>{localStorage.setItem('voiceTeleprompterScript',input.value);toast('Script browser में save हो गई');};
-const saved=localStorage.getItem('voiceTeleprompterScript');if(saved)input.value=saved;
-$('fontSize').oninput=e=>scriptEl.style.fontSize=e.target.value+'px';
-$('scrollUp').onclick=()=>{manual=true;reader.scrollTop-=150;setTimeout(()=>manual=false,500)};
-$('scrollDown').onclick=()=>{manual=true;reader.scrollTop+=150;setTimeout(()=>manual=false,500)};
-$('fullBtn').onclick=()=>document.documentElement.requestFullscreen?.();
-render();
+function stopRecognition(){state.listening=false;if(state.recognition)try{state.recognition.stop()}catch(e){}$("mic").textContent="🎙️ Voice Start";setStatus("रुका हुआ","warn")}
+function toggleMic(){if(state.listening)stopRecognition();else startRecognition()}
+function pause(){state.paused=!state.paused;if(state.paused){if(state.recognition)try{state.recognition.stop()}catch(e){}setStatus("⏸ Pause","warn");$("pause").textContent="▶ Resume"}else{state.badStreak=0;setStatus("🎙️ सुन रहा है","live");$("pause").textContent="⏸ Pause";if(!state.listening)startRecognition()}}
+function soundScroll(){if(!state.listening)return;state.idx=Math.min(state.segments.length-1,state.idx+1);highlight()}
+function saveHistory(){
+  const t=$("input").value.trim();if(!t)return;
+  const h=JSON.parse(localStorage.getItem("gov_history")||"[]");h.unshift({title:t.slice(0,70),text:t,at:Date.now()});
+  localStorage.setItem("gov_history",JSON.stringify(h.slice(0,12)));renderHistory();showMini("Script save हो गई");
+}
+function renderHistory(){
+  const h=JSON.parse(localStorage.getItem("gov_history")||"[]"), box=$("history");box.innerHTML="";
+  h.forEach((x,i)=>{const b=document.createElement("button");b.textContent=x.title.replace(/\s+/g," ");b.onclick=()=>{$("input").value=x.text;buildScript()};box.appendChild(b)})
+}
+$("load").onclick=buildScript;$("save").onclick=saveHistory;$("clear").onclick=()=>{$("input").value="";state.segments=[];state.idx=0;render();localStorage.removeItem("gov_script")};
+$("mic").onclick=toggleMic;$("pause").onclick=pause;
+$("restart").onclick=()=>jump(0);$("back").onclick=()=>jump(Math.max(0,state.idx-3));$("next").onclick=()=>jump(Math.min(state.segments.length-1,state.idx+3));
+$("mirror").onclick=()=>{state.mirror=!state.mirror;$("script").classList.toggle("mirror",state.mirror);$("mirror").classList.toggle("active",state.mirror)};
+$("rotate").onclick=()=>{state.rotate=!state.rotate;$("reader").classList.toggle("rotate",state.rotate);$("rotate").classList.toggle("active",state.rotate)};
+$("present").onclick=()=>document.body.classList.toggle("presentation");
+$("full").onclick=()=>document.documentElement.requestFullscreen?.();
+$("editorBtn").onclick=()=>$("side").classList.toggle("open");
+$("font").oninput=e=>$("script").style.fontSize=e.target.value+"px";
+$("line").oninput=e=>$("script").style.lineHeight=(e.target.value/100);
+$("position").oninput=e=>$("reader").style.paddingTop=e.target.value+"vh";
+$("mode").onchange=e=>{state.mode=e.target.value;showMini("Mode: "+e.target.options[e.target.selectedIndex].text)};
+$("reader").addEventListener("scroll",()=>{if(state.mode==="sound"&&state.listening){}});
+let downTimer=null;
+$("reader").addEventListener("touchstart",()=>{downTimer=setTimeout(()=>showMini("Manual mode में शब्द पर tap करके sync करें"),800)},{passive:true});
+$("reader").addEventListener("touchend",()=>clearTimeout(downTimer),{passive:true});
+const old=localStorage.getItem("gov_script");if(old){$("input").value=old;buildScript()}renderHistory();
+setStatus("तैयार");
 })();
 </script>
 </body>

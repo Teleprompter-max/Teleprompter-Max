@@ -4,245 +4,229 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#08090b">
-<link rel="manifest" href="manifest.webmanifest">
-<title>GOV Voice Teleprompter</title>
+<title>GOV Voice Teleprompter v3</title>
 <style>
-:root{--bg:#07080a;--panel:#111318;--panel2:#171920;--line:#292d36;--text:#f4f4f4;--muted:#9da3ae;--accent:#ffd21c;--good:#43d17b;--warn:#ffb83d;--bad:#ff6666;--reader:#050608}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Devanagari","Noto Sans",sans-serif}
-button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:10px 13px;background:#272b33;color:#fff;cursor:pointer}button:hover{filter:brightness(1.12)}button.primary{background:var(--accent);color:#101010;font-weight:800}button.active{outline:2px solid var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}
-.app{height:100%;display:flex;flex-direction:column}.top{display:flex;align-items:center;gap:9px;padding:10px 13px;background:#101216;border-bottom:1px solid var(--line);z-index:10;flex-wrap:wrap}.brand{font-weight:850;font-size:19px;margin-right:auto;white-space:nowrap}.brand b{color:var(--accent)}
-.status{font-size:12px;padding:7px 10px;border-radius:99px;background:#272b33;color:#c9ced7}.status.live{background:#123b24;color:#8ef0b0}.status.warn{background:#46300e;color:#ffd68b}.status.bad{background:#481d22;color:#ffaaaa}
-.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;padding:8px 13px;background:#17191e;border-bottom:1px solid var(--line);font-size:12px}.toolbar label{display:flex;align-items:center;gap:6px;color:#aeb3bd}.toolbar input[type=range]{width:110px}.toolbar select,.toolbar input[type=number]{background:#252932;border:1px solid #333844;color:#fff;border-radius:8px;padding:7px}
-.meter{height:4px;background:#242831}.meter>div{height:100%;width:0;background:var(--accent);transition:width .25s}
-.main{display:grid;grid-template-columns:330px 1fr;flex:1;min-height:0}.side{background:#101216;border-right:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:9px;min-height:0}.side textarea{width:100%;min-height:260px;flex:1;resize:none;background:#08090b;border:1px solid #30343d;color:#eee;border-radius:10px;padding:12px;font-size:16px;line-height:1.65}.row{display:flex;gap:7px}.row>*{flex:1}.hint{font-size:11px;line-height:1.5;color:#9299a5}.small{font-size:11px;color:#858c97}.history{max-height:140px;overflow:auto;display:flex;flex-direction:column;gap:5px}.history button{text-align:left;font-size:11px;padding:7px;background:#1c2027}
-.reader{position:relative;overflow:auto;background:var(--reader);padding:42vh 7vw 55vh;scroll-behavior:smooth}.script{max-width:1100px;margin:auto;text-align:center;font-size:42px;line-height:1.65;letter-spacing:.005em}.seg{display:block;padding:3px 9px;border-radius:8px;color:#d9dbe0;transition:background .18s,color .18s,opacity .18s}.seg.done{color:#555b65}.seg.current{color:#fff;background:rgba(255,210,28,.10);box-shadow:0 0 0 1px rgba(255,210,28,.18)}.seg.near{color:#9ea4af}.seg mark{background:transparent;color:inherit}.seg.cue{color:#7e8794;font-style:italic}.seg:hover{background:rgba(255,255,255,.05);cursor:pointer}
-.active-line{position:fixed;left:0;right:0;top:50%;height:1px;background:rgba(255,210,28,.13);pointer-events:none;z-index:2}.rec-dot{width:9px;height:9px;border-radius:50%;background:var(--bad);display:inline-block;margin-right:5px;vertical-align:middle;box-shadow:0 0 0 4px rgba(255,102,102,.12)}
-.mini{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#181b21dd;border:1px solid #353943;border-radius:12px;padding:7px 11px;max-width:min(700px,92vw);font-size:11px;color:#aeb4bf;backdrop-filter:blur(8px);z-index:20;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.panel{position:fixed;right:14px;bottom:14px;background:#15181ddd;border:1px solid #343842;border-radius:12px;padding:9px 11px;z-index:15;backdrop-filter:blur(8px);font-size:11px;color:#aeb4bf}.panel strong{color:#fff}.hidden{display:none!important}
-.empty{color:#6e7580;padding:20vh 20px}.mirror{transform:scaleX(-1) rotate(180deg)}.rotate{transform:rotate(90deg);transform-origin:center center}
-@media(max-width:850px){.main{grid-template-columns:1fr}.side{position:absolute;z-index:30;left:8px;right:8px;top:112px;bottom:8px;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px #000b;display:none}.side.open{display:flex}.reader{padding-left:5vw;padding-right:5vw}.script{font-size:31px}.mobile-editor{display:inline-block!important}}
-.mobile-editor{display:none}
-body.presentation .top,body.presentation .toolbar,body.presentation .side{display:none!important}body.presentation .main{display:block}body.presentation .reader{height:100%;padding-left:7vw;padding-right:7vw}
+:root{--bg:#070809;--panel:#111318;--line:#292d36;--text:#f5f5f5;--muted:#969daa;--yellow:#ffd21c;--green:#42d47b;--red:#ff6565}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Devanagari","Noto Sans",sans-serif}
+body{overflow:hidden}.app{height:100%;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#111318;border-bottom:1px solid var(--line);z-index:20;flex-wrap:wrap}.brand{font-weight:850;font-size:18px;margin-right:auto}.brand b{color:var(--yellow)}
+button,select,input,textarea{font:inherit}button{border:0;border-radius:9px;background:#272b33;color:#fff;padding:9px 12px}button.primary{background:var(--yellow);color:#111;font-weight:800}button.active{outline:2px solid var(--yellow)}
+.status{padding:6px 9px;border-radius:20px;background:#282c34;font-size:12px;color:#d3d6dc}.live{background:#103822;color:#8ff1b1}.warn{background:#46300e;color:#ffd98e}.bad{background:#481d22;color:#ffaaaa}
+.controls{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#17191e;border-bottom:1px solid var(--line);flex-wrap:wrap;font-size:12px}.controls label{display:flex;align-items:center;gap:5px;color:#adb2bb}.controls input[type=range]{width:95px}.controls select{background:#272b33;color:#fff;border:1px solid #373b44;border-radius:7px;padding:6px}
+.meter{height:4px;background:#242831}.meter i{display:block;height:100%;width:0;background:var(--yellow);transition:width .2s}
+.layout{flex:1;min-height:0;display:grid;grid-template-columns:330px 1fr}.editor{background:#101216;border-right:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0}.editor textarea{flex:1;min-height:220px;resize:none;background:#07090b;border:1px solid #30343d;border-radius:10px;color:#eee;padding:12px;line-height:1.6;font-size:16px}.row{display:flex;gap:6px}.row>*{flex:1}.hint{font-size:11px;color:#9097a2;line-height:1.45}
+.reader{position:relative;overflow:auto;background:#050608;padding:44vh 7vw 55vh;scroll-behavior:smooth}.text{max-width:1100px;margin:auto;font-size:44px;line-height:1.55;text-align:center}.word{display:inline;border-radius:4px;padding:1px 1px;color:#d9dce2;transition:color .12s,background .12s}.word.done{color:#515761}.word.active{color:#fff;background:rgba(255,210,28,.13);box-shadow:0 0 0 1px rgba(255,210,28,.16)}.word:hover{background:#22262d;cursor:pointer}.space{white-space:pre}.para{display:block;height:.45em}
+.eyeline{position:fixed;left:0;right:0;top:50%;border-top:1px solid rgba(255,210,28,.15);pointer-events:none}.diag{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);background:#171a20e8;border:1px solid #363a43;border-radius:11px;padding:7px 10px;font-size:11px;color:#aeb4be;max-width:92vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:30}.panel{position:fixed;right:12px;bottom:12px;background:#171a20e8;border:1px solid #363a43;border-radius:11px;padding:8px 10px;font-size:11px;color:#aeb4be;z-index:30}.panel b{color:#fff}.hidden{display:none}
+@media(max-width:850px){.layout{display:block}.editor{display:none;position:absolute;z-index:40;left:7px;right:7px;top:105px;bottom:7px;border:1px solid var(--line);border-radius:12px;box-shadow:0 15px 50px #000}.editor.open{display:flex}.mobile{display:inline-block!important}.text{font-size:32px}.reader{padding-left:5vw;padding-right:5vw}}
+.mobile{display:none}
+body.presentation header,body.presentation .controls,body.presentation .editor{display:none!important}body.presentation .layout{display:block}body.presentation .reader{height:100%}
+.mirror .text{transform:scaleX(-1) rotate(180deg)}.rotated{transform:rotate(90deg);transform-origin:center center}
 </style>
 </head>
 <body>
 <div class="app">
-  <header class="top">
-    <div class="brand"><b>GOV</b> Voice Teleprompter</div>
-    <span id="status" class="status">तैयार</span>
-    <button id="editorBtn" class="mobile-editor">☰ Script</button>
-    <button id="mic" class="primary">🎙️ Voice Start</button>
-    <button id="pause">⏸ Pause</button>
-    <button id="present">▶ Presentation</button>
-    <button id="full">⛶</button>
-  </header>
-  <div class="toolbar">
-    <label>Font <input id="font" type="range" min="24" max="80" value="42"></label>
-    <label>Line <input id="line" type="range" min="120" max="210" value="165"></label>
-    <label>Position <input id="position" type="range" min="30" max="70" value="50"></label>
-    <label>Language <select id="lang"><option value="hi-IN">Hindi</option><option value="en-IN">English (India)</option><option value="auto">Auto</option></select></label>
-    <label>Mode <select id="mode"><option value="voice">Voice Track</option><option value="sound">Sound Scroll</option><option value="manual">Manual</option></select></label>
-    <button id="mirror">🪞 Mirror</button>
-    <button id="rotate">↻ Rotate</button>
-    <button id="back">← Back</button>
-    <button id="next">Next →</button>
-    <button id="restart">↺ Start</button>
-  </div>
-  <div class="meter"><div id="progress"></div></div>
-  <main class="main">
-    <aside id="side" class="side">
-      <textarea id="input" placeholder="अपनी Hindi / Hinglish script यहाँ paste करें...&#10;&#10;[pause] जैसे cues को पढ़ने से बचाने के लिए square brackets इस्तेमाल कर सकते हैं।"></textarea>
-      <div class="row"><button id="load" class="primary">Script Load</button><button id="save">Save</button><button id="clear">Clear</button></div>
-      <div class="small">Recent scripts</div>
-      <div id="history" class="history"></div>
-      <div class="hint">Voice Track पूरी script में बोले गए शब्द खोजता है। थोड़ी wording अलग हो, कुछ शब्द छूटें, pause हो या आप आगे/पीछे जाएँ तो यह फिर से sync करने की कोशिश करेगा। लगातार स्पष्ट mismatch होने पर यह रुकेगा।</div>
-    </aside>
-    <section id="reader" class="reader">
-      <div id="script" class="script"><div class="empty">Script paste करके “Script Load” दबाएँ।</div></div>
-    </section>
-  </main>
+<header>
+  <div class="brand"><b>GOV</b> Voice Teleprompter</div>
+  <span id="status" class="status">तैयार</span>
+  <button id="editBtn" class="mobile">☰ Script</button>
+  <button id="mic" class="primary">🎙️ Voice Start</button>
+  <button id="pause">⏸ Pause</button>
+  <button id="present">▶ Presentation</button>
+  <button id="full">⛶</button>
+</header>
+<div class="controls">
+  <label>Font <input id="font" type="range" min="22" max="85" value="44"></label>
+  <label>Line <input id="line" type="range" min="115" max="190" value="155"></label>
+  <label>Active line <input id="active" type="range" min="30" max="70" value="50"></label>
+  <label>Language <select id="lang"><option value="hi-IN">Hindi</option><option value="en-IN">English India</option><option value="en-US">English US</option></select></label>
+  <label>Tracking <select id="sensitivity"><option value="easy">Flexible</option><option value="normal" selected>Normal</option><option value="strict">Strict</option></select></label>
+  <button id="mirror">🪞 Mirror</button><button id="rotate">↻ Rotate</button>
+  <button id="back">← Back</button><button id="next">Next →</button><button id="restart">↺ Start</button>
 </div>
-<div class="active-line"></div>
-<div id="mini" class="mini hidden"></div>
-<div id="panel" class="panel">Match: <strong id="score">—</strong> · Position: <strong id="pos">0%</strong></div>
+<div class="meter"><i id="meter"></i></div>
+<div class="layout">
+<aside id="editor" class="editor">
+  <textarea id="scriptInput" placeholder="Hindi / Hinglish script यहाँ paste करें..."></textarea>
+  <div class="row"><button id="load" class="primary">Load Script</button><button id="save">Save</button><button id="clear">Clear</button></div>
+  <div class="hint">Voice Track पहले बोले हुए शब्दों का rolling buffer बनाता है, फिर script में matching word-window खोजता है। साफ mismatch पर थोड़ी देर बाद रुकता है और वापस script मिलने पर आगे/पीछे re-sync करता है।</div>
+  <div class="hint">पहली बार microphone permission Allow करें। Android पर Chrome में test करना बेहतर है।</div>
+</aside>
+<main id="reader" class="reader"><div id="text" class="text"><div style="color:#666;padding-top:15vh">Script load करें।</div></div></main>
+</div>
+</div>
+<div class="eyeline"></div>
+<div id="diag" class="diag hidden"></div>
+<div class="panel">Match <b id="score">—</b> · <b id="position">0%</b> · Spoken <b id="spoken">0</b></div>
 
 <script>
-(() => {
+(()=> {
 const $=id=>document.getElementById(id);
-const state={segments:[], idx:0, listening:false, paused:false, recognition:null, finalWords:[], lastMatch:0, badStreak:0, mirror:false, rotate:false, mode:'voice', scriptKey:''};
-const filler=new Set("a an the and or to of in on is are was were for with from this that it you your i we they he she hai hain tha thi the ho hoga hogi hote ko ke ka ki mein me se par aur ya ye yeh woh wo ek ab to phir dekhiye dekhen dosto matlab yani bas bhi hi na nahi kiya kya kaise kyunki kyon kyunki agar lekin jab jaisa jaise tak".split(" "));
-const normMap={"क़":"क","ख़":"ख","ग़":"ग","ज़":"ज","ड़":"ड","ढ़":"ढ","फ़":"फ","ऱ":"र"};
-function normalize(s){
-  s=String(s||"").toLowerCase().replace(/[क़ख़ग़ज़ड़ढ़फ़ऱ]/g,c=>normMap[c]||c);
-  return s.normalize("NFC").replace(/[।॥!?;:,."“”‘’'(){}[\]<>]/g," ")
-    .replace(/[-–—_/|]/g," ").replace(/\s+/g," ").trim();
+const S={tokens:[],pos:0,recognition:null,listening:false,paused:false,finalText:"",lastResult:"",bad:0,good:0,mirror:false,rotate:false,script:""};
+const fillers=new Set(("a an the and or to of in on for with from is are was were be been this that it you your we they he she i me my our their am do does did have has had will would can could should as at by about into over after before if then than so very just now not no yes hai hain ho hua hui hue tha thi the mein me mujhe mera meri mere ko ke ka ki kaafi ek aur ya ye yeh woh wo ab to phir bas bhi hi na nahi ki kya kaise kyun kyunki agar lekin jab jaisa jaise tak par se ne par main matlab yani dekhiye dekho dosto").split(" "));
+function norm(s){return String(s||"").toLowerCase().normalize("NFC").replace(/[क़]/g,"क").replace(/[ख़]/g,"ख").replace(/[ग़]/g,"ग").replace(/[ज़]/g,"ज").replace(/[ड़]/g,"ड").replace(/[ढ़]/g,"ढ").replace(/[फ़]/g,"फ").replace(/[ऱ]/g,"र").replace(/[।॥!?;:,."“”‘’'()[\]{}<>]/g," ").replace(/[-–—_/|]/g," ").replace(/\s+/g," ").trim()}
+function words(s){return norm(s).split(" ").filter(Boolean)}
+function content(s){return words(s).filter(w=>w.length>1&&!fillers.has(w))}
+function edit(a,b){let m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array(n+1).fill(0).map((_,i)=>i);for(let i=1;i<=m;i++){let q=[i];for(let j=1;j<=n;j++)q[j]=Math.min(q[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=q}return p[n]}
+function lcs(a,b){let p=Array(b.length+1).fill(0);for(let i=1;i<=a.length;i++){let q=[0];for(let j=1;j<=b.length;j++)q[j]=a[i-1]===b[j-1]?p[j-1]+1:Math.max(p[j],q[j-1]);p=q}return p[b.length]}
+function matchScore(a,b){
+ const A=content(a),B=content(b);if(!A.length||!B.length)return 0;
+ const ed=1-edit(A,B)/Math.max(A.length,B.length);
+ const lc=lcs(A,B)/Math.max(1,Math.min(A.length,B.length));
+ let anchor=0;
+ for(let i=0;i<A.length;i++)for(let j=0;j<B.length;j++){let k=0;while(i+k<A.length&&j+k<B.length&&A[i+k]===B[j+k])k++;if(k>anchor)anchor=k}
+ const an=Math.min(1,anchor/Math.min(4,Math.max(2,A.length)));
+ return .45*ed+.35*lc+.20*an;
 }
-function toks(s){return normalize(s).split(" ").filter(Boolean)}
-function contentToks(s){return toks(s).filter(x=>x.length>1 && !filler.has(x))}
-function lev(a,b){
-  const A=a,B=b,m=A.length,n=B.length;
-  if(!m)return n;if(!n)return m;
-  let p=Array.from({length:n+1},(_,i)=>i);
-  for(let i=1;i<=m;i++){let c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(A[i-1]===B[j-1]?0:1));p=c}return p[n];
-}
-function similarity(a,b){
-  const A=contentToks(a),B=contentToks(b);if(!A.length||!B.length)return 0;
-  const d=lev(A,B);return Math.max(0,1-d/Math.max(A.length,B.length));
-}
-function subseqScore(spoken, target){
-  const A=contentToks(spoken),B=contentToks(target);if(!A.length||!B.length)return 0;
-  let best=0;
-  for(let start=0;start<B.length;start++){
-    let matched=0,ai=0;
-    for(let bi=start;bi<B.length && ai<A.length;bi++){
-      if(A[ai]===B[bi]){matched++;ai++}
-      else if(bi+1<B.length && A[ai]===B[bi+1]){bi++;matched++;ai++}
-    }
-    best=Math.max(best,matched/Math.max(2,Math.min(A.length,B.length)));
-  }
-  return best;
-}
-function anchorScore(spoken,target){
-  const A=contentToks(spoken),B=contentToks(target);if(!A.length||!B.length)return 0;
-  let best=0;
-  for(let i=0;i<A.length;i++)for(let j=0;j<B.length;j++){let k=0;while(i+k<A.length&&j+k<B.length&&A[i+k]===B[j+k])k++;best=Math.max(best,k)}
-  return Math.min(1,best/Math.min(5,Math.max(2,A.length)));
-}
-function score(spoken,target){
-  return Math.max(similarity(spoken,target)*.58,subseqScore(spoken,target)*.72,anchorScore(spoken,target)*.85);
-}
-function splitScript(text){
-  const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean), out=[];
-  for(const line of lines){
-    const cue=/^\[[^\]]+\]$/.test(line);
-    if(cue){out.push({text:line,cue:true});continue}
-    const parts=line.match(/[^.!?।॥]+[.!?।॥]?/g)||[line];
-    for(const p of parts.map(x=>x.trim()).filter(Boolean)){
-      const w=toks(p);
-      if(w.length<=28)out.push({text:p,cue:false});
-      else for(let i=0;i<w.length;i+=22)out.push({text:w.slice(i,i+22).join(" "),cue:false});
-    }
-  }
-  return out;
+function parse(text){
+ const arr=[];
+ const parts=text.split(/(\n\s*\n)/);
+ for(const part of parts){
+   if(!part.trim()){arr.push({type:"gap"});continue}
+   const ws=part.trim().split(/\s+/);
+   for(const raw of ws){
+     const t=raw.replace(/^[“"‘'([{]+|[”"’')\]},.!?।॥:;]+$/g,"");
+     if(t)arr.push({type:"word",text:t,norm:norm(t)});
+   }
+ }
+ return arr;
 }
 function render(){
-  const el=$("script");el.innerHTML="";
-  if(!state.segments.length){el.innerHTML='<div class="empty">Script paste करके “Script Load” दबाएँ।</div>';return}
-  state.segments.forEach((s,i)=>{
-    const d=document.createElement("span");d.className="seg "+(s.cue?"cue":"");d.dataset.i=i;d.textContent=s.text+" ";
-    d.onclick=()=>jump(i);el.appendChild(d);
-  });highlight();
+ const el=$("text");el.innerHTML="";
+ S.tokens.forEach((t,i)=>{
+   if(t.type==="gap"){const p=document.createElement("span");p.className="para";el.appendChild(p);return}
+   const e=document.createElement("span");e.className="word";e.dataset.i=i;e.textContent=t.text+" ";e.onclick=()=>jump(i);el.appendChild(e);
+ });
+ paint();
 }
-function highlight(){
-  document.querySelectorAll(".seg").forEach((e,i)=>{e.classList.toggle("done",i<state.idx);e.classList.toggle("current",i===state.idx);e.classList.toggle("near",Math.abs(i-state.idx)<=2)});
-  const cur=document.querySelector('.seg[data-i="'+state.idx+'"]');
-  if(cur && state.listening)cur.scrollIntoView({behavior:"smooth",block:"center"});
-  const pct=state.segments.length?Math.round(state.idx/(state.segments.length-1)*100):0;
-  $("progress").style.width=pct+"%";$("pos").textContent=pct+"%";
+function paint(){
+ const els=document.querySelectorAll(".word");
+ els.forEach((e,i)=>{const n=+e.dataset.i;e.classList.toggle("done",n<S.pos);e.classList.toggle("active",n===S.pos)});
+ const cur=document.querySelector('.word[data-i="'+S.pos+'"]');
+ if(cur)cur.scrollIntoView({behavior:"smooth",block:"center"});
+ const wordCount=S.tokens.filter(x=>x.type==="word").length;
+ const done=S.tokens.slice(0,S.pos).filter(x=>x.type==="word").length;
+ const pct=wordCount?Math.round(done/wordCount*100):0;
+ $("meter").style.width=pct+"%";$("position").textContent=pct+"%";
 }
-function jump(i){state.idx=Math.max(0,Math.min(state.segments.length-1,i));state.badStreak=0;highlight()}
-function setStatus(t,type=""){const s=$("status");s.textContent=t;s.className="status "+type}
-function showMini(t){const m=$("mini");m.textContent=t;m.classList.remove("hidden");clearTimeout(showMini.t);showMini.t=setTimeout(()=>m.classList.add("hidden"),1800)}
-function buildScript(){
-  const text=$("input").value.trim();state.segments=splitScript(text);state.idx=0;state.badStreak=0;state.finalWords=[];state.scriptKey=text.slice(0,100);
-  localStorage.setItem("gov_script",text);render();showMini(state.segments.length+" हिस्से तैयार");
+function jump(i){let j=i;while(j<S.tokens.length&&S.tokens[j].type!=="word")j++;S.pos=Math.max(0,Math.min(S.tokens.length-1,j));S.bad=0;paint()}
+function setStatus(t,c=""){const e=$("status");e.textContent=t;e.className="status "+c}
+function diag(t){const e=$("diag");e.textContent=t;e.classList.remove("hidden");clearTimeout(diag.t);diag.t=setTimeout(()=>e.classList.add("hidden"),2500)}
+function scriptTextFromTokens(){return S.tokens.filter(x=>x.type==="word").map(x=>x.text).join(" ")}
+function build(){
+ S.script=$("scriptInput").value.trim();S.tokens=parse(S.script);S.pos=0;S.finalText="";S.bad=0;S.good=0;render();localStorage.setItem("gov_v3_script",S.script);diag(S.tokens.filter(x=>x.type==="word").length+" words loaded")}
+function threshold(){return $("sensitivity").value==="easy"?.38:$("sensitivity").value==="strict"?.55:.46}
+function scriptWordArray(){return S.tokens.filter(x=>x.type==="word")}
+function candidatePositions(spokenWords){
+ const arr=scriptWordArray(), N=arr.length, out=new Set();
+ const curWordIndex=S.tokens.slice(0,S.pos+1).filter(x=>x.type==="word").length;
+ const L=spokenWords.length;
+ for(let d=-70;d<=140;d+=2){let p=curWordIndex+d;if(p>=0&&p<N)out.add(p)}
+ // Whole-script recovery candidates: exact 3-gram anchors and broad sampling.
+ const tail=spokenWords.slice(-8);
+ const grams=[];
+ for(let n=4;n>=3;n--){for(let i=0;i+n<=tail.length;i++)grams.push(tail.slice(i,i+n).join(" "));}
+ const text=arr.map(x=>x.norm);
+ for(const g of grams){
+   const gws=g.split(" ");
+   for(let i=0;i+gws.length<=N;i++){
+     let ok=true;for(let j=0;j<gws.length;j++){if(text[i+j]!==gws[j]){ok=false;break}}
+     if(ok)out.add(i);
+   }
+   if(out.size>180)break;
+ }
+ const step=Math.max(1,Math.floor(N/180));
+ for(let i=0;i<N;i+=step)out.add(i);
+ return [...out];
 }
-function nearbyWindow(center){
-  const arr=[];
-  const start=Math.max(0,center-4),end=Math.min(state.segments.length,center+35);
-  for(let i=start;i<end;i++)arr.push(i);
-  return arr;
+function bestMatch(spoken){
+ const sw=content(spoken);if(sw.length<2)return null;
+ const arr=scriptWordArray(),N=arr.length,L=sw.length;
+ let best={score:0,start:0,end:0};
+ const candidates=candidatePositions(sw);
+ for(const start of candidates){
+   const lengths=[Math.max(4,L-3),Math.max(5,L),Math.min(30,L+4),Math.min(36,L+8)];
+   for(const len of lengths){
+     if(start+len>N)continue;
+     const target=arr.slice(start,start+len).map(x=>x.text).join(" ");
+     const sc=matchScore(sw,target);
+     // Prefer matches near current, but a very strong global match wins.
+     const cur=S.tokens.slice(0,S.pos+1).filter(x=>x.type==="word").length;
+     const dist=Math.abs(start-cur);
+     const bias=dist<80?1:dist<250?.985:0.97;
+     const final=sc*bias;
+     if(final>best.score)best={score:final,start,end:start+len-1};
+   }
+ }
+ return best;
 }
-function matchSpeech(spoken){
-  if(!spoken || !state.segments.length)return;
-  const clean=normalize(spoken);if(!clean)return;
-  let best={i:state.idx,score:0};
-  const candidates=nearbyWindow(state.idx);
-  // Whole-script fallback is deliberately sampled broadly to handle skipped paragraphs/backtracking.
-  const step=Math.max(1,Math.floor(state.segments.length/120));
-  for(let i=0;i<state.segments.length;i+=step)candidates.push(i);
-  for(let i of candidates){
-    const s=state.segments[i]; if(s.cue)continue;
-    let local=score(clean,s.text);
-    // Combine adjacent segments so a recognition result containing half of one line and half of the next can sync.
-    if(i+1<state.segments.length)local=Math.max(local,score(clean,s.text+" "+state.segments[i+1].text)*.96);
-    if(i+2<state.segments.length)local=Math.max(local,score(clean,s.text+" "+state.segments[i+1].text+" "+state.segments[i+2].text)*.90);
-    // Favor positions close to current, but never enough to defeat a clear match elsewhere.
-    const dist=Math.abs(i-state.idx);
-    const proximity=dist<=4?1:dist<=12?.97:dist<=35?.94:1;
-    local*=proximity;
-    if(local>best.score)best={i,score:local};
-  }
-  $("score").textContent=Math.round(best.score*100)+"%";
-  const threshold=state.mode==="voice"?0.40:0.0;
-  if(state.mode!=="voice")return;
-  if(best.score>=threshold){
-    state.badStreak=0;
-    if(best.i!==state.idx){
-      state.idx=best.i;highlight();
-    }
-    setStatus("🎙️ Voice tracking","live");
-  }else{
-    state.badStreak++;
-    if(state.badStreak>=3){
-      state.paused=true;
-      setStatus("⏸ Script से बाहर / फिर से sync करें","warn");
-      showMini("आवाज़ script से match नहीं हो रही — वापस script पर बोलें");
-    }else setStatus("… Script खोज रहा है","warn");
-  }
+function applySpeech(transcript){
+ const sw=content(transcript);$("spoken").textContent=sw.length;
+ if(sw.length<2)return;
+ const best=bestMatch(transcript);if(!best)return;
+ $("score").textContent=Math.round(best.score*100)+"%";
+ const arr=scriptWordArray();
+ const currentWord=S.tokens.slice(0,S.pos+1).filter(x=>x.type==="word").length;
+ const newWord=Math.min(arr.length-1,Math.max(0,best.end-1));
+ const th=threshold();
+ // A strong match may move either direction. Weak matches only advance when close.
+ if(best.score>=th){
+   S.bad=0;S.good++;
+   // Do not jump backward on a tiny accidental match. A real backward retake needs a strong match.
+   if(newWord>=currentWord-2 || best.score>=.68){
+     const targetTokenIndex=findTokenIndex(newWord);
+     if(targetTokenIndex>=0 && targetTokenIndex!==S.pos){S.pos=targetTokenIndex;paint()}
+   }
+   setStatus("🎙️ Voice tracking","live");
+ }else{
+   S.good=0;S.bad++;
+   // Hysteresis: do not freeze on a single bad ASR chunk.
+   if(S.bad>=7){
+     setStatus("⏸ Script से बाहर — वापस script पर बोलें","warn");
+     diag("Voice match नहीं मिला — script की line पर वापस आते ही re-sync होगा");
+   }else setStatus("… voice sync खोज रहा है","warn");
+ }
 }
-function startRecognition(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){setStatus("Browser में voice recognition उपलब्ध नहीं","bad");return}
-  if(state.recognition)try{state.recognition.stop()}catch(e){}
-  const r=new SR();state.recognition=r;r.continuous=true;r.interimResults=true;r.maxAlternatives=3;
-  r.lang=$("lang").value==="auto"?"hi-IN":$("lang").value;
-  r.onstart=()=>{state.listening=true;state.paused=false;setStatus("🎙️ सुन रहा है","live");$("mic").textContent="⏹ Voice Stop"};
-  r.onresult=e=>{
-    if(state.mode==="sound"){setStatus("🎙️ Sound scroll","live");return}
-    let text="";
-    for(let i=e.resultIndex;i<e.results.length;i++)text+=" "+e.results[i][0].transcript;
-    const all=(state.finalWords.join(" ")+" "+text).trim();
-    const wordsNow=toks(all);
-    state.finalWords=wordsNow.slice(-45);
-    matchSpeech(state.finalWords.join(" "));
-  };
-  r.onerror=e=>{if(e.error!=="aborted")setStatus("Voice error: "+e.error,"bad")};
-  r.onend=()=>{if(state.listening&&!state.paused){setTimeout(()=>{try{r.start()}catch(e){}},250)}};
-  try{r.start()}catch(e){}
+function findTokenIndex(wordIndex){
+ let n=-1;for(let i=0;i<S.tokens.length;i++)if(S.tokens[i].type==="word"){n++;if(n===wordIndex)return i}return -1;
 }
-function stopRecognition(){state.listening=false;if(state.recognition)try{state.recognition.stop()}catch(e){}$("mic").textContent="🎙️ Voice Start";setStatus("रुका हुआ","warn")}
-function toggleMic(){if(state.listening)stopRecognition();else startRecognition()}
-function pause(){state.paused=!state.paused;if(state.paused){if(state.recognition)try{state.recognition.stop()}catch(e){}setStatus("⏸ Pause","warn");$("pause").textContent="▶ Resume"}else{state.badStreak=0;setStatus("🎙️ सुन रहा है","live");$("pause").textContent="⏸ Pause";if(!state.listening)startRecognition()}}
-function soundScroll(){if(!state.listening)return;state.idx=Math.min(state.segments.length-1,state.idx+1);highlight()}
-function saveHistory(){
-  const t=$("input").value.trim();if(!t)return;
-  const h=JSON.parse(localStorage.getItem("gov_history")||"[]");h.unshift({title:t.slice(0,70),text:t,at:Date.now()});
-  localStorage.setItem("gov_history",JSON.stringify(h.slice(0,12)));renderHistory();showMini("Script save हो गई");
+function recognition(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){setStatus("इस browser में Speech Recognition नहीं है","bad");diag("Chrome/Edge/Safari में खोलें");return}
+ if(S.recognition)try{S.recognition.stop()}catch(e){}
+ const r=new SR();S.recognition=r;r.continuous=true;r.interimResults=true;r.maxAlternatives=3;r.lang=$("lang").value;
+ r.onstart=()=>{S.listening=true;S.paused=false;setStatus("🎙️ सुन रहा है","live");$("mic").textContent="⏹ Voice Stop"};
+ r.onresult=e=>{
+   let finalPart="",interim="";
+   for(let i=0;i<e.results.length;i++){
+     const x=e.results[i][0].transcript;
+     if(e.results[i].isFinal)finalPart+=" "+x; else interim+=" "+x;
+   }
+   if(finalPart.trim())S.finalText=(S.finalText+" "+finalPart).trim();
+   // Keep only recent final words; interim is always current and should not be duplicated.
+   const f=words(S.finalText).slice(-28).join(" ");
+   const i=interim.trim();
+   const combined=(f+" "+i).trim();
+   S.lastResult=combined;
+   applySpeech(combined);
+ };
+ r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"){S.listening=false;setStatus("Microphone permission denied","bad")}else if(e.error!=="aborted")setStatus("Voice error: "+e.error,"bad")};
+ r.onend=()=>{if(S.listening&&!S.paused)setTimeout(()=>{try{r.start()}catch(e){}},180)};
+ try{r.start()}catch(e){setStatus("Voice start नहीं हुआ","bad")}
 }
-function renderHistory(){
-  const h=JSON.parse(localStorage.getItem("gov_history")||"[]"), box=$("history");box.innerHTML="";
-  h.forEach((x,i)=>{const b=document.createElement("button");b.textContent=x.title.replace(/\s+/g," ");b.onclick=()=>{$("input").value=x.text;buildScript()};box.appendChild(b)})
-}
-$("load").onclick=buildScript;$("save").onclick=saveHistory;$("clear").onclick=()=>{$("input").value="";state.segments=[];state.idx=0;render();localStorage.removeItem("gov_script")};
-$("mic").onclick=toggleMic;$("pause").onclick=pause;
-$("restart").onclick=()=>jump(0);$("back").onclick=()=>jump(Math.max(0,state.idx-3));$("next").onclick=()=>jump(Math.min(state.segments.length-1,state.idx+3));
-$("mirror").onclick=()=>{state.mirror=!state.mirror;$("script").classList.toggle("mirror",state.mirror);$("mirror").classList.toggle("active",state.mirror)};
-$("rotate").onclick=()=>{state.rotate=!state.rotate;$("reader").classList.toggle("rotate",state.rotate);$("rotate").classList.toggle("active",state.rotate)};
-$("present").onclick=()=>document.body.classList.toggle("presentation");
-$("full").onclick=()=>document.documentElement.requestFullscreen?.();
-$("editorBtn").onclick=()=>$("side").classList.toggle("open");
-$("font").oninput=e=>$("script").style.fontSize=e.target.value+"px";
-$("line").oninput=e=>$("script").style.lineHeight=(e.target.value/100);
-$("position").oninput=e=>$("reader").style.paddingTop=e.target.value+"vh";
-$("mode").onchange=e=>{state.mode=e.target.value;showMini("Mode: "+e.target.options[e.target.selectedIndex].text)};
-$("reader").addEventListener("scroll",()=>{if(state.mode==="sound"&&state.listening){}});
-let downTimer=null;
-$("reader").addEventListener("touchstart",()=>{downTimer=setTimeout(()=>showMini("Manual mode में शब्द पर tap करके sync करें"),800)},{passive:true});
-$("reader").addEventListener("touchend",()=>clearTimeout(downTimer),{passive:true});
-const old=localStorage.getItem("gov_script");if(old){$("input").value=old;buildScript()}renderHistory();
-setStatus("तैयार");
+function stop(){S.listening=false;if(S.recognition)try{S.recognition.stop()}catch(e){}$("mic").textContent="🎙️ Voice Start";setStatus("रुका हुआ","warn")}
+function pause(){S.paused=!S.paused;if(S.paused){if(S.recognition)try{S.recognition.stop()}catch(e){}setStatus("⏸ Pause","warn");$("pause").textContent="▶ Resume"}else{$("pause").textContent="⏸ Pause";S.bad=0;if(!S.listening)recognition()}}
+$("load").onclick=build;$("save").onclick=()=>{localStorage.setItem("gov_v3_script",S.script);diag("Script browser में save हो गई")};
+$("clear").onclick=()=>{$("scriptInput").value="";S.tokens=[];S.pos=0;S.script="";render()};
+$("mic").onclick=()=>S.listening?stop():recognition();$("pause").onclick=pause;
+$("restart").onclick=()=>jump(0);$("back").onclick=()=>jump(Math.max(0,S.pos-8));$("next").onclick=()=>jump(Math.min(S.tokens.length-1,S.pos+8));
+$("present").onclick=()=>document.body.classList.toggle("presentation");$("full").onclick=()=>document.documentElement.requestFullscreen?.();
+$("editBtn").onclick=()=>$("editor").classList.toggle("open");
+$("font").oninput=e=>$("text").style.fontSize=e.target.value+"px";
+$("line").oninput=e=>$("text").style.lineHeight=e.target.value/100;
+$("active").oninput=e=>{$(".eyeline").style.top=e.target.value+"%"};
+$("mirror").onclick=()=>{S.mirror=!S.mirror;document.body.classList.toggle("mirror",S.mirror);$("mirror").classList.toggle("active",S.mirror)};
+$("rotate").onclick=()=>{S.rotate=!S.rotate;$("reader").classList.toggle("rotated",S.rotate);$("rotate").classList.toggle("active",S.rotate)};
+const old=localStorage.getItem("gov_v3_script");if(old){$("scriptInput").value=old;build()}else render();
 })();
 </script>
-</body>
-</html>
+</body></html>

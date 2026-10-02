@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voice Teleprompter</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;background:#101114;color:#eee}
+.app{min-height:100vh;display:flex;flex-direction:column}.top{padding:12px 16px;border-bottom:1px solid #292b31;background:#17181c;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:800;font-size:20px;margin-right:auto}.brand span{color:#ffd21c}.status{font-size:13px;padding:7px 10px;border-radius:20px;background:#292b31}.status.live{background:#183d25;color:#9dffb4}.status.pause{background:#4b3514;color:#ffd789}
+button,select,input{font:inherit}button{border:0;border-radius:8px;padding:9px 12px;background:#2b2e35;color:#fff;cursor:pointer}button.primary{background:#ffd21c;color:#111;font-weight:800}button.danger{background:#8e2630}button:disabled{opacity:.45;cursor:not-allowed}
+.controls{padding:10px 16px;background:#1c1e23;border-bottom:1px solid #292b31;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.controls label{font-size:12px;color:#aaa}.controls input[type=range]{width:120px}.controls input[type=number]{width:70px;background:#2b2e35;color:#fff;border:0;padding:8px;border-radius:7px}
+.main{display:grid;grid-template-columns:330px 1fr;flex:1;min-height:0}.side{padding:14px;border-right:1px solid #292b31;background:#151619;display:flex;flex-direction:column;gap:10px}.side textarea{flex:1;min-height:350px;resize:none;background:#0d0e10;color:#eee;border:1px solid #30323a;border-radius:8px;padding:12px;font-size:16px;line-height:1.7}.hint{font-size:12px;color:#999;line-height:1.5}.reader{position:relative;overflow:auto;padding:12vh 8vw 55vh;background:#050607}.script{max-width:1100px;margin:auto;font-size:38px;line-height:1.7;letter-spacing:.01em}.seg{padding:3px 8px;border-radius:6px;transition:.15s}.seg.done{color:#555}.seg.current{background:rgba(255,210,28,.13);box-shadow:0 0 0 1px rgba(255,210,28,.25)}.seg.near{color:#bbb}.seg.mismatch{color:#ff7d7d}.empty{color:#777;text-align:center;padding:20vh 20px}
+.meter{height:4px;background:#272a30}.meter>div{height:100%;background:#ffd21c;width:0}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#252830;border:1px solid #3b3e47;padding:10px 14px;border-radius:8px;display:none;z-index:20}
+@media(max-width:800px){.main{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid #292b31;max-height:45vh}.script{font-size:30px}.reader{padding-left:5vw;padding-right:5vw}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><span>GOV</span> Voice Teleprompter</div>
+    <div id="status" class="status">तैयार</div>
+    <button id="micBtn" class="primary">🎙️ Voice Start</button>
+    <button id="pauseBtn">⏸ रोकें</button>
+    <button id="fullBtn">⛶ Fullscreen</button>
+  </div>
+  <div class="controls">
+    <button id="scrollUp">↑</button><button id="scrollDown">↓</button>
+    <label>अक्षर आकार <input id="fontSize" type="range" min="22" max="72" value="38"></label>
+    <label>Matching <input id="tolerance" type="range" min="15" max="60" value="35"></label>
+    <label>Scroll gap <input id="gap" type="number" min="0" max="10" step=".5" value="1.5"></label>
+    <button id="resetBtn">↺ शुरुआत</button>
+  </div>
+  <div class="meter"><div id="progress"></div></div>
+  <div class="main">
+    <aside class="side">
+      <textarea id="input" placeholder="अपनी हिंदी / Hinglish script यहाँ paste करें..."></textarea>
+      <div class="hint">
+        Voice mode में बोलते समय छोटे शब्द-अंतर, विराम और सामान्य Hinglish/Hindi variation को tolerate किया जाएगा।
+        यदि आपकी बोली script से पर्याप्त दूर चली जाती है तो prompter रुक जाएगा। Script पर लौटते ही यह पास के हिस्से को फिर से पकड़ने की कोशिश करेगा।
+      </div>
+      <button id="loadBtn" class="primary">Script Load करें</button>
+      <button id="saveBtn">Browser में Save</button>
+      <button id="clearBtn">Clear</button>
+    </aside>
+    <main id="reader" class="reader">
+      <div id="script" class="script"><div class="empty">Script paste करके “Script Load करें” दबाएँ।</div></div>
+    </main>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+(() => {
+const $=id=>document.getElementById(id);
+const input=$('input'), scriptEl=$('script'), reader=$('reader'), status=$('status'), micBtn=$('micBtn'), pauseBtn=$('pauseBtn');
+let segments=[], idx=0, recognition=null, listening=false, paused=true, lastTranscript='', manual=false;
+
+function normalize(s){
+  return s.toLowerCase()
+   .replace(/[।॥!?;:,।"“”‘’'()\\[\\]{}]/g,' ')
+   .replace(/[०-९]/g,c=>String('०१२३४५६७८९'.indexOf(c)))
+   .replace(/[^a-z0-9\\u0900-\\u097f\\s]/g,' ')
+   .replace(/\\s+/g,' ').trim();
+}
+function words(s){return normalize(s).split(' ').filter(Boolean)}
+function editDistance(a,b){
+ const A=words(a),B=words(b),m=A.length,n=B.length;
+ if(!m)return n;if(!n)return m;
+ let prev=Array.from({length:n+1},(_,i)=>i);
+ for(let i=1;i<=m;i++){
+  const cur=[i];
+  for(let j=1;j<=n;j++){
+   const sub=prev[j-1]+(A[i-1]===B[j-1]?0:1);
+   cur[j]=Math.min(cur[j-1]+1,prev[j]+1,sub);
+  } prev=cur;
+ } return prev[n];
+}
+function similarity(a,b){
+ const A=words(a),B=words(b); if(!A.length||!B.length)return 0;
+ const d=editDistance(a,b), max=Math.max(A.length,B.length);
+ return Math.max(0,1-d/max);
+}
+function makeChunks(text){
+ const raw=text.replace(/\\r/g,'').split(/(?<=[।?!])\\s+|\\n+/).map(s=>s.trim()).filter(Boolean);
+ const out=[];
+ raw.forEach(s=>{
+   const w=words(s);
+   if(w.length<=28) out.push(s);
+   else {
+     const toks=s.split(/\\s+/); for(let i=0;i<toks.length;i+=20) out.push(toks.slice(i,i+20).join(' '));
+   }
+ });
+ return out;
+}
+function render(){
+ scriptEl.innerHTML='';
+ if(!segments.length){scriptEl.innerHTML='<div class="empty">Script paste करके “Script Load करें” दबाएँ।';return;}
+ segments.forEach((t,i)=>{const d=document.createElement('span');d.className='seg';d.dataset.i=i;d.textContent=t+' ';scriptEl.appendChild(d);});
+ updateView();
+}
+function updateView(){
+ document.querySelectorAll('.seg').forEach((e,i)=>{
+  e.classList.toggle('done',i<idx);e.classList.toggle('current',i===idx);e.classList.toggle('near',Math.abs(i-idx)<=2&&i>idx);
+ });
+ const el=document.querySelector('.seg.current');
+ if(el && !manual) el.scrollIntoView({behavior:'smooth',block:'center'});
+ $('progress').style.width=(segments.length?Math.min(100,idx/segments.length*100):0)+'%';
+}
+function setStatus(t,cls=''){status.textContent=t;status.className='status '+cls}
+function toast(t){const x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1800)}
+
+function findMatch(transcript){
+ const tol=Number($('tolerance').value)/100;
+ const spoken=words(transcript); if(!spoken.length)return {score:0,pos:idx};
+ // Compare a sliding window around current position. This prevents jumping to an unrelated repeated phrase.
+ let best={score:0,pos:idx};
+ const start=Math.max(0,idx-2), end=Math.min(segments.length-1,idx+7);
+ for(let p=start;p<=end;p++){
+   let candidate=segments[p];
+   // Current and nearby chunks; using 2-4 chunks allows natural speech to span sentence boundaries.
+   for(let span=1;span<=4 && p+span-1<segments.length;span++){
+     const text=segments.slice(p,p+span).join(' ');
+     const sc=similarity(transcript,text);
+     if(sc>best.score)best={score:sc,pos:p};
+   }
+ }
+ // Also compare only the first/last portions of current chunk to handle long sentences.
+ const cur=segments[idx]||'';
+ const cw=words(cur);
+ if(spoken.length>=3 && cw.length>=spoken.length){
+   for(let k=0;k<=cw.length-spoken.length;k++){
+     const local=cw.slice(k,k+spoken.length).join(' ');
+     const sc=similarity(transcript,local);
+     if(sc>best.score)best={score:sc,pos:idx};
+   }
+ }
+ return {score:best.score,pos:best.pos,accepted:best.score>=tol};
+}
+
+function processSpeech(text){
+ if(paused||!segments.length)return;
+ const r=findMatch(text);
+ lastTranscript=text;
+ if(r.score>=Number($('tolerance').value)/100){
+   // Move only when the matched area is ahead or current; avoid backward jumps.
+   if(r.pos>=idx-1){
+     idx=Math.min(segments.length-1,Math.max(idx,r.pos));
+     updateView();
+     setStatus('● Script के साथ चल रहा है','live');
+   }
+ } else {
+   setStatus('⏸ Script से बाहर — रुका हुआ','pause');
+   paused=true;
+   micBtn.textContent='🎙️ Resume Voice';
+ }
+}
+
+function startRecognition(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){toast('इस browser में Speech Recognition उपलब्ध नहीं है। Chrome/Edge इस्तेमाल करें।');return;}
+ if(recognition)try{recognition.stop()}catch(e){}
+ recognition=new SR();
+ recognition.lang='hi-IN';
+ recognition.continuous=true;
+ recognition.interimResults=true;
+ recognition.maxAlternatives=3;
+ recognition.onstart=()=>{listening=true;setStatus('● सुन रहा है','live');micBtn.textContent='🛑 Voice Stop'};
+ recognition.onresult=e=>{
+   let finalText='';
+   for(let i=e.resultIndex;i<e.results.length;i++){
+     for(let a=0;a<Math.min(3,e.results[i].length);a++){
+       const t=e.results[i][a].transcript.trim();
+       if(t.length>finalText.length)finalText=t;
+     }
+   }
+   if(finalText)processSpeech(finalText);
+ };
+ recognition.onerror=e=>{
+   if(e.error==='not-allowed')toast('Microphone permission दें।');
+   else if(e.error!=='no-speech')toast('Voice recognition: '+e.error);
+ };
+ recognition.onend=()=>{listening=false;if(!paused){setTimeout(()=>{try{recognition.start()}catch(e){}},250)}else setStatus('रुका हुआ','pause')};
+ try{recognition.start()}catch(e){}
+}
+micBtn.onclick=()=>{
+ if(!segments.length){toast('पहले script load करें।');return}
+ if(listening){paused=true;try{recognition.stop()}catch(e){};setStatus('रुका हुआ','pause');micBtn.textContent='🎙️ Voice Start'}
+ else {paused=false;startRecognition();setStatus('● Script tracking','live')}
+};
+pauseBtn.onclick=()=>{
+ paused=!paused;
+ pauseBtn.textContent=paused?'▶ चलाएँ':'⏸ रोकें';
+ if(paused){try{recognition&&recognition.stop()}catch(e){};setStatus('रुका हुआ','pause');}
+ else {startRecognition();}
+};
+$('loadBtn').onclick=()=>{segments=makeChunks(input.value);idx=0;paused=true;render();setStatus('तैयार');toast(segments.length+' script sections loaded');};
+$('resetBtn').onclick=()=>{idx=0;paused=true;render();setStatus('शुरुआत पर');};
+$('clearBtn').onclick=()=>{input.value='';segments=[];idx=0;render();};
+$('saveBtn').onclick=()=>{localStorage.setItem('voiceTeleprompterScript',input.value);toast('Script browser में save हो गई');};
+const saved=localStorage.getItem('voiceTeleprompterScript');if(saved)input.value=saved;
+$('fontSize').oninput=e=>scriptEl.style.fontSize=e.target.value+'px';
+$('scrollUp').onclick=()=>{manual=true;reader.scrollTop-=150;setTimeout(()=>manual=false,500)};
+$('scrollDown').onclick=()=>{manual=true;reader.scrollTop+=150;setTimeout(()=>manual=false,500)};
+$('fullBtn').onclick=()=>document.documentElement.requestFullscreen?.();
+render();
+})();
+</script>
+</body>
+</html>
